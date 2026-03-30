@@ -1,5 +1,8 @@
-# B.A.S.E.D. -- Broad Arithmetic Symbolic Expression Derivator
+# B.A.S.E.D. - Broad Arithmetic Symbolic Expression Derivator
 B.A.S.E.D. is aimed to be a symbolic expression compiler designed to transform complex mathematical notation into optimized C code.
+Authors:
+- Antoni Kubiak,
+- Szymon Król szymonkrol@student.agh.edu.pl.
 
 ## Core Objectives
 
@@ -25,11 +28,11 @@ Support for a rich mathematical grammar including:
 2. Symbolic derivation engine
 Users can define functions and request derivatives with respect to specific variables. The compiler applies the chain rule and power rule recursively to generate the derivative expression before passing them on.
 
-3. Optimization Pipeline
+3. Optimization
 That part includes:
 - Common subexpression elimination: Identifying repeated terms (like x2 or sin(y)) and assigning them to temporary variables (t0​,t1​) to prevent redundant calculations. That is done by converting expression parse tree into directed acyclic graph by merging nodes containing the same expressions.
 - Constant folding: Pre-calculating values that do not depend on input variables (e.g., the sum of 1…10 becomes 55).
-- Identity Reduction: Eg. simplifying 0⋅x to 0 and 1⋅x to x
+- Identity reduction: Eg. simplifying 0⋅x to 0 and 1⋅x to x
 
 ## Simple examples
 For input:
