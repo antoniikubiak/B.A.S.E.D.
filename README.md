@@ -4,6 +4,8 @@ Authors:
 - Antoni Kubiak antonikubiak@student.agh.edu.pl,
 - Szymon Król szymonkrol@student.agh.edu.pl.
 
+Implementation Language: Python 3.11+
+
 ## Core Objectives
 
 The primary goal of B.A.S.E.D. is to transform abstract mathematical definitions into executable C code. The project focuses on three main pillars:
