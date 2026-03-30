@@ -1,7 +1,7 @@
 # B.A.S.E.D. - Broad Arithmetic Symbolic Expression Derivator
 B.A.S.E.D. is aimed to be a symbolic expression compiler designed to transform complex mathematical notation into optimized C code.
 Authors:
-- Antoni Kubiak,
+- Antoni Kubiak antonikubiak@student.agh.edu.pl,
 - Szymon Król szymonkrol@student.agh.edu.pl.
 
 ## Core Objectives
