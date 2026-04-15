@@ -4,7 +4,11 @@ Authors:
 - Antoni Kubiak antonikubiak@student.agh.edu.pl,
 - Szymon Król szymonkrol@student.agh.edu.pl.
 
-Implementation Language: Python 3.11+
+Mathematical expressions compiler
+Result: C code
+Implementation language: Python 3
+Parser generator: Lark
+
 
 ## Core Objectives
 
@@ -22,7 +26,7 @@ The primary goal of B.A.S.E.D. is to transform abstract mathematical definitions
 Support for a rich mathematical grammar including:
 - Standard arithmetic (+,−,∗,/) and exponentiation.
 - Elementary functions: sin, cos, log, exp.
-- Finite sum and product notation: Converting `\sum{n; start; end​; expr}` into either optimized loops or collapsed algebraic constants.
+- Finite sum and product notation: Converting `\sum{n; start; end; expr}` into either optimized loops or collapsed algebraic constants.
 - Ability to define piecewise functions: `if-else` syntax may enable the user to define expressions differently based on various inputs.
 - Recursive functions definition: with the use of `if-else` syntax
 - Basic number types handling.
