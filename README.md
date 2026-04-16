@@ -4,14 +4,11 @@ Authors:
 - Antoni Kubiak antonikubiak@student.agh.edu.pl,
 - Szymon Król szymonkrol@student.agh.edu.pl.
 
-Mathematical expressions compiler
-
-Result: C code
-
-Implementation language: Python 3
-
-Parser generator: Lark
-
+Basics:
+- Mathematical expressions compiler
+- Result: C code
+- Implementation language: Python 3
+- Parser generator: Lark
 
 ## Core Objectives
 
