@@ -5,8 +5,11 @@ Authors:
 - Szymon Król szymonkrol@student.agh.edu.pl.
 
 Mathematical expressions compiler
+
 Result: C code
+
 Implementation language: Python 3
+
 Parser generator: Lark
 
 
