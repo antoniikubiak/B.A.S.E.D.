@@ -1,15 +1,23 @@
-start: definition_list target
+start: definition* target+
 
-definition_list: definition*
 definition: IDENTIFIER "(" param_list? ")" ":=" b_expr ";"
 
 param_list: IDENTIFIER ("," IDENTIFIER)*
 
 target: ">" b_expr ";" IDENTIFIER ";" TYPE
 
-?b_expr: "if" condition "then" b_expr ("elif" condition "then" b_expr)* "else" b_expr
-      | expr
- 
+// Dangling-else problem solution -- "else" always binds with nearest "then"
+?b_expr: matched
+       | unmatched
+
+?matched: "if" condition "then" matched "else" matched
+        | expr
+
+?unmatched: "if" condition "then" b_expr
+          | "if" condition "then" matched "else" unmatched
+
+condition: expr rel_op expr
+
 !rel_op: "==" | "!=" | ">" | "<" | ">=" | "<="
 
 ?expr: term (("+" | "-") term)*
