@@ -26,7 +26,7 @@ The primary goal of B.A.S.E.D. is to transform abstract mathematical definitions
 Support for a rich mathematical grammar including:
 - Standard arithmetic (+,−,∗,/) and exponentiation.
 - Elementary functions: sin, cos, log, exp.
-- Finite sum and product notation: Converting `sum(n; start; end; expr)` into either loops or algebraic constants.
+- Finite sum and product notation: Converting `sum(n from start to end: expr)` into either loops or algebraic constants.
 - Ability to define piecewise functions: `if-else` syntax may enable the user to define expressions differently based on various inputs.
 
 2. Symbolic derivation engine
@@ -41,9 +41,9 @@ That part includes:
 ## Simple examples
 For input:
 ```
-f(x) := x+2
-g(x, y) := x^2+sin(y) + 1
-> f(x) + 2*g(x, x) + sin(x); foo; double
+f(x) := x+2;
+g(x, y) := x^2+sin(y) + 1;
+> f(x) + 2*g(x, x) + sin(x) as foo(int x) -> double;
 ```
 The resulting C function could be:
 ``` C
@@ -54,7 +54,7 @@ double foo(x) {
 ```
 For input:
 ```
-> sum(n; 1; 10; n*x^2); foo; double
+> sum(n from 1 to 10: n*x^2) as foo() -> double
 ```
 The resulting C function could be:
 ``` C
