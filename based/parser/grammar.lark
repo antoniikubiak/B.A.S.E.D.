@@ -1,24 +1,25 @@
 start: definition* target+
 
-definition: IDENTIFIER "(" param_list? ")" ":=" b_expr ";"
+definition: IDENTIFIER "(" param_list? ")" ":=" basic_expression ";"
 
 param_list: IDENTIFIER ("," IDENTIFIER)*
 
-target: ">" b_expr ";" IDENTIFIER ";" TYPE
+target: ">" basic_expression ";" IDENTIFIER ";" TYPE ";"
 
-// Dangling-else problem solution -- "else" always binds with nearest "then"
-?b_expr: matched
-       | unmatched
+?basic_expression: if_statement
+                 | expr
 
-?matched: "if" condition "then" matched "else" matched
-        | expr
+if_statement: "if" condition "then" basic_expression (elif_block)* "else" basic_expression
 
-?unmatched: "if" condition "then" b_expr
-          | "if" condition "then" matched "else" unmatched
+elif_block: "elif" condition "then" basic_expression
 
-condition: expr rel_op expr
+?condition: log_or
 
-!rel_op: "==" | "!=" | ">" | "<" | ">=" | "<="
+?log_or: log_and ("or" log_and)*
+?log_and: comparison ("and" comparison)*
+
+?comparison: expr REL_OP expr
+           | "(" condition ")"
 
 ?expr: term (("+" | "-") term)*
 ?term: power (("*" | "/") power)*
@@ -28,7 +29,7 @@ condition: expr rel_op expr
      | IDENTIFIER      -> var
      | function_call
      | shorthand
-     | "(" b_expr ")"
+     | "(" basic_expression ")"
 
 function_call: IDENTIFIER "(" arg_list? ")"
 arg_list: expr ("," expr)*
@@ -36,6 +37,7 @@ arg_list: expr ("," expr)*
 !shorthand: ("sum" | "prod") "(" IDENTIFIER ";" expr ";" expr ";" expr ")"
 
 TYPE: "double" | "float" | "int"
+REL_OP: "==" | "!=" | ">" | "<" | ">=" | "<="
 %import common.CNAME -> IDENTIFIER
 %import common.NUMBER
 %import common.WS
