@@ -3,45 +3,52 @@
 
 start: definition* target+
 
-definition: IDENTIFIER "(" param_list? ")" ":=" basic_expression ";"
+definition: IDENTIFIER "(" param_list? ")" ":=" expression ";"
 
 param_list: IDENTIFIER ("," IDENTIFIER)*
 
-target: ">" basic_expression ";" IDENTIFIER ";" TYPE ";"
+target: ">" expression "as" IDENTIFIER "(" param_w_type_list? ")" "->" TYPE ";"
 
-?basic_expression: if_statement
-                 | expr
+param_w_type_list: TYPE IDENTIFIER ("," TYPE IDENTIFIER)*
 
-if_statement: "if" condition "then" basic_expression (elif_block)* "else" basic_expression
-
-elif_block: "elif" condition "then" basic_expression
+?expression: "if" condition "then" expression ("elif" condition "then" expression)* "else" expression
+           | expr
 
 ?condition: log_or
 
 ?log_or: log_and ("or" log_and)*
 ?log_and: comparison ("and" comparison)*
 
-?comparison: expr REL_OP expr
+?comparison: BOOL_CONST
+           | expr REL_OP expr
            | "(" condition ")"
 
 ?expr: term (("+" | "-") term)*
-?term: power (("*" | "/") power)*
+?term: factor (("*" | "/") factor)*
+?factor: "-" factor
+       | power
 ?power: atom ("^" power)?
 
-?atom: NUMBER          -> number
-     | IDENTIFIER      -> var
+?atom: NUMBER
+     | IDENTIFIER
      | function_call
      | shorthand
-     | "(" basic_expression ")"
+     | derivative
+     | "(" expression ")"
 
 function_call: IDENTIFIER "(" arg_list? ")"
 arg_list: expr ("," expr)*
 
-!shorthand: ("sum" | "prod") "(" IDENTIFIER ";" expr ";" expr ";" expr ")"
+shorthand: ("sum" | "prod") "(" IDENTIFIER "from" INT "to" INT ":" expression ")"
+derivative: "diff" "(" IDENTIFIER "," INT "," expression ")"
 
-TYPE: "double" | "float" | "int"
+BOOL_CONST.2: "true" | "false"
+
+TYPE.2: "double" | "float" | "int"
 REL_OP: "==" | "!=" | ">" | "<" | ">=" | "<="
+
 %import common.CNAME -> IDENTIFIER
 %import common.NUMBER
+%import common.INT
 %import common.WS
 %ignore WS
