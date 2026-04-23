@@ -14,9 +14,7 @@ param_w_type_list: TYPE IDENTIFIER ("," TYPE IDENTIFIER)*
 ?expression: "if" condition "then" expression ("elif" condition "then" expression)* "else" expression
            | expr
 
-?condition: log_or
-
-?log_or: log_and ("or" log_and)*
+?condition: log_and ("or" log_and)*
 ?log_and: comparison ("and" comparison)*
 
 ?comparison: BOOL_CONST
