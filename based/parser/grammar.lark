@@ -1,3 +1,6 @@
+// TODO: - Add abbitlity to comment function
+//       - Add various brackets types
+
 start: definition* target+
 
 definition: IDENTIFIER "(" param_list? ")" ":=" basic_expression ";"
