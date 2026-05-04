@@ -21,13 +21,13 @@ param_w_type_list: TYPE IDENTIFIER ("," TYPE IDENTIFIER)*
            | expr REL_OP expr
            | "(" condition ")"
 
-?expr: term (("+" | "-") term)*
-?term: factor (("*" | "/") factor)*
+?expr: term (("+" | "-") term)* -> add
+?term: factor (("*" | "/") factor)* -> prod
 ?factor: "-" factor
        | power
-?power: atom ("^" power)?
+?power: atom ("^" power)? -> power
 
-?atom: NUMBER
+?atom: NUMBER -> float_num
      | IDENTIFIER
      | function_call
      | shorthand
