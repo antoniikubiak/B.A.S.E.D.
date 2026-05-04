@@ -1,6 +1,6 @@
 from typing import override
 
-from Structure.Expression import Expression
+from based.Structure.Expression import Expression
 
 
 class Variable(Expression):

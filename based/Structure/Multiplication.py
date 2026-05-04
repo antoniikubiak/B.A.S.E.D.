@@ -1,6 +1,6 @@
 
-from Structure.Constant import IntegerConstant, Constant
-from Structure.CommutativeOperation import CommutativeOperation
+from based.Structure.Constant import IntegerConstant, Constant
+from based.Structure.CommutativeOperation import CommutativeOperation
 
 
 class Multiplication(CommutativeOperation):

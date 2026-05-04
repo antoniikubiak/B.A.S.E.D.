@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import override, Any
-from Structure.Epsilon import eps
-from Structure.Expression import Expression
+from based.Structure.Epsilon import eps
+from based.Structure.Expression import Expression
 
 class Constant[T: (int, float)](Expression):
     def __init__(self, value: Any) -> None:

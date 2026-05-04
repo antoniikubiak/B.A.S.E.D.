@@ -1,7 +1,7 @@
 from typing import override
 
-from Structure.CommutativeOperation import CommutativeOperation
-from Structure.Constant import Constant, IntegerConstant
+from based.Structure.CommutativeOperation import CommutativeOperation
+from based.Structure.Constant import Constant, IntegerConstant
 
 
 class Addition (CommutativeOperation):

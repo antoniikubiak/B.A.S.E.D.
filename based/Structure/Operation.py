@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
-from Structure.Constant import Constant
-from Structure.Expression import Expression
+from based.Structure.Constant import Constant
+from based.Structure.Expression import Expression
 
 
 class Operation(Expression):

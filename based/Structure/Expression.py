@@ -1,6 +1,6 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
-from Structure.Node import Node
+from based.Structure.Node import Node
 
 
 class Expression(Node):

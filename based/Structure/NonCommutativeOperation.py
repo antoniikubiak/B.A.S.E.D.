@@ -1,9 +1,9 @@
-from abc import abstractmethod, ABC
+from abc import ABC
 from typing import override
 
-from Structure.Constant import Constant
-from Structure.Expression import Expression
-from Structure.Operation import Operation
+from based.Structure.Constant import Constant
+from based.Structure.Expression import Expression
+from based.Structure.Operation import Operation
 
 
 class NonCommutativeOperation(Operation, ABC):

@@ -1,5 +1,5 @@
-from Structure.Constant import Constant, IntegerConstant
-from Structure.NonCommutativeOperation import NonCommutativeOperation
+from based.Structure.Constant import Constant, IntegerConstant
+from based.Structure.NonCommutativeOperation import NonCommutativeOperation
 
 
 class Exponentiation (NonCommutativeOperation):

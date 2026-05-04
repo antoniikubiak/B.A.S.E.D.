@@ -1,11 +1,11 @@
 from lark import Transformer
 
-from Structure.Addition import Addition
-from Structure.Constant import FloatConstant, IntegerConstant, Constant
-from Structure.Exponentiation import Exponentiation
-from Structure.Expression import Expression
-from Structure.Multiplication import Multiplication
-from Structure.Variable import Variable
+from based.Structure.Addition import Addition
+from based.Structure.Constant import FloatConstant, IntegerConstant
+from based.Structure.Exponentiation import Exponentiation
+from based.Structure.Expression import Expression
+from based.Structure.Multiplication import Multiplication
+from based.Structure.Variable import Variable
 
 
 class TreeTransformer(Transformer):
