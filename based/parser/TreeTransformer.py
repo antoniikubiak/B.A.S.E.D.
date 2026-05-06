@@ -10,21 +10,33 @@ from based.Structure.Variable import Variable
 
 class TreeTransformer(Transformer):
     def float_num(self, items: list[str]) -> FloatConstant:
-        return FloatConstant(items[0])
+        return FloatConstant.create(items[0])
 
     def int_num(self, items: list[str]) -> IntegerConstant:
-        return IntegerConstant(items[0])
+        return IntegerConstant.create(items[0])
 
     def variable(self, items: list[str]) -> Variable:
-        return Variable(items[0])
+        return Variable.create(items[0])
 
     def power(self, items: list[Expression]) -> Exponentiation | Expression:
         if len(items) == 1:
             return items[0]
-        return Exponentiation(items[0], items[1]).simplify()
+        return Exponentiation.create(items[0], items[1])
 
     def prod(self, items: list[Expression]) -> Expression:
-        return Multiplication(items).simplify()
+        res = items[0]
+        for sign, item in zip(items[1::2], items[2::2]):
+            if sign == '*':
+                res *= item
+            else:
+                res /= item
+        return res
 
     def add(self, items: list[Expression]) -> Expression:
-        return Addition(items).simplify()
+        res = items[0]
+        for sign, item in zip(items[1::2], items[2::2]):
+            if sign == '+':
+                res += item
+            else:
+                res -= item
+        return res

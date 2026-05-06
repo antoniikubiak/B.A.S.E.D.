@@ -4,10 +4,14 @@ from typing import override
 from based.Structure.CommutativeOperation import CommutativeOperation
 from based.Structure.Constant import Constant, IntegerConstant
 from based.Structure.Expression import Expression
-from based.Structure.Multiplication import Multiplication
+from based.Structure.SortPriority import SortPriority
 
 
 class Addition (CommutativeOperation):
+    @override
+    def sort_key(self) -> tuple[SortPriority, str | int, tuple[Expression, ...]]:
+        return SortPriority.OPERATION, "ADD", self.args
+
     @override
     @staticmethod
     def is_absorbing(element: Constant) -> bool:
@@ -16,7 +20,7 @@ class Addition (CommutativeOperation):
     @override
     @staticmethod
     def identity() -> Constant:
-        return IntegerConstant(0)
+        return IntegerConstant.create(0)
 
     @override
     @staticmethod
@@ -32,23 +36,14 @@ class Addition (CommutativeOperation):
         return " + ".join(str(x) for x in self.args)
 
     def __add__(self, other: Expression) -> Expression:
-        res = copy(self)
-        res.args.append(other)
-        return res.simplify()
+        if isinstance(other, Addition):
+            return Addition.create(*(list(self.args) + list(other.args)))
+        return Addition.create(*(list(self.args) + [other]))
 
     def __sub__(self, other: Expression) -> Expression:
-        res = copy(self)
-        res.args.append(-other)
-        return res.simplify()
-
-    def __mul__(self, other: Expression) -> Expression:
-        return Multiplication([self, other]).simplify()
-
-    def __truediv__(self, other: Expression) -> Expression:
-        pass
+        if isinstance(other, Addition):
+            return Addition.create(*(list(self.args) + list(-x for x in other.args)))
+        return Addition.create(*(list(self.args) + [-other]))
 
     def __neg__(self) -> Expression:
-        res = copy(self)
-        res.args = [-x for x in res.args]
-        return res.simplify()
-
+        return Addition.create(*(-x for x in self.args))

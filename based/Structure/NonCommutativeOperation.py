@@ -14,9 +14,19 @@ class NonCommutativeOperation(Operation, ABC):
         self.right = right
 
     @override
-    def simplify(self) -> Expression:
-        self.left.simplify()
-        self.right.simplify()
+    def __hash__(self) -> int:
+        return hash((type(self), self.left, self.right))
+
+    @override
+    def __eq__(self, other: Expression) -> bool:
+        if isinstance(other, self.__class__):
+            return self.left == other.left and self.right == other.right
+        return False
+
+    @override
+    def _simplify(self) -> Expression:
+        self.left._simplify()
+        self.right._simplify()
         if isinstance(self.right, Constant):
             if self.__class__.is_absorbing(self.right):
                 return self.__class__.identity()

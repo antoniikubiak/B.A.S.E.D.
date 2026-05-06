@@ -21,14 +21,14 @@ param_w_type_list: TYPE IDENTIFIER ("," TYPE IDENTIFIER)*
            | expr REL_OP expr
            | "(" condition ")"
 
-?expr: term (("+" | "-") term)* -> add
-?term: factor (("*" | "/") factor)* -> prod
+?expr: term (ADD_OP term)* -> add
+?term: factor (MUL_OP factor)* -> prod
 ?factor: "-" factor
        | power
 ?power: atom ("^" power)? -> power
 
 ?atom: NUMBER -> float_num
-     | IDENTIFIER
+     | IDENTIFIER -> variable
      | function_call
      | shorthand
      | derivative
@@ -44,6 +44,8 @@ BOOL_CONST.2: "true" | "false"
 
 TYPE.2: "double" | "float" | "int"
 REL_OP: "==" | "!=" | ">" | "<" | ">=" | "<="
+MUL_OP: "*" | "/"
+ADD_OP: "+" | "-"
 
 %import common.CNAME -> IDENTIFIER
 %import common.NUMBER
