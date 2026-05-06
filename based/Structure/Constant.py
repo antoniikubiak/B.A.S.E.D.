@@ -28,9 +28,19 @@ class Constant[T: (int, float)](Expression):
             return self._wrap(self.value + other.value)
         return NotImplemented
 
+    def __sub__(self, other: Any) -> Constant:
+        if isinstance(other, Constant):
+            return self._wrap(self.value - other.value)
+        return NotImplemented
+
     def __mul__(self, other: Any) -> Constant:
         if isinstance(other, Constant):
             return self._wrap(self.value * other.value)
+        return NotImplemented
+
+    def __truediv__(self, other: Any) -> Constant:
+        if isinstance(other, Constant):
+            return self._wrap(self.value / other.value)
         return NotImplemented
 
     def __pow__(self, other: Any) -> Constant:
@@ -38,10 +48,19 @@ class Constant[T: (int, float)](Expression):
             return self._wrap(self.value ** other.value)
         return NotImplemented
 
+    def __neg__(self) -> Constant:
+        return self._wrap(-self.value)
+
+    def __pos__(self) -> Constant:
+        return self._wrap(self.value)
+
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, Constant):
             return abs(self.value - other.value) < eps
         return False
+
+    def __ne__(self, other: Any) -> bool:
+        return not self == other
 
     def __repr__(self):
         return str(self.value)

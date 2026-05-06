@@ -1,6 +1,9 @@
+from copy import copy
 
+from based.Structure.Addition import Addition
 from based.Structure.Constant import IntegerConstant, Constant
 from based.Structure.CommutativeOperation import CommutativeOperation
+from based.Structure.Expression import Expression
 
 
 class Multiplication(CommutativeOperation):
@@ -22,4 +25,23 @@ class Multiplication(CommutativeOperation):
 
     def __repr__(self):
         return " * ".join(str(x) for x in self.args)
+
+    def __add__(self, other: Expression) -> Expression:
+        return Addition([self, other]).simplify()
+
+    def __sub__(self, other: Expression) -> Expression:
+        return Addition([self, -other]).simplify()
+
+    def __mul__(self, other: Expression) -> Expression:
+        res = copy(self)
+        res.args.append(other)
+        return res.simplify()
+
+    def __truediv__(self, other: Expression) -> Expression:
+        res = copy(self)
+        res.args.append(other.__invert__())
+        return res.simplify()
+
+    def __neg__(self) -> Expression:
+        return self * IntegerConstant(-1)
 
