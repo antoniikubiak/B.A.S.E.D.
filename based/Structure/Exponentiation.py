@@ -23,7 +23,7 @@ class Exponentiation (NonCommutativeOperation):
 
     @override
     @staticmethod
-    def operate_on_constants(left: Constant, right: Constant) -> Constant:
+    def operate_on_constants(left: Constant, right: Constant) -> Expression:
         return left ** right
 
     @override
@@ -35,3 +35,7 @@ class Exponentiation (NonCommutativeOperation):
     @staticmethod
     def is_absorbing(element: Constant) -> bool:
         return element == IntegerConstant.create(0)
+
+    @override
+    def __invert__(self) -> Expression:
+        return Exponentiation.create(self.left, -self.right)

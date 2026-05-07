@@ -24,5 +24,3 @@ class Operation(Expression):
     @abstractmethod
     def is_absorbing(element: Constant) -> bool:
         pass
-
-

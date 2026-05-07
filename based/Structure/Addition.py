@@ -1,4 +1,3 @@
-from copy import copy
 from typing import override
 
 from based.Structure.CommutativeOperation import CommutativeOperation
@@ -24,7 +23,7 @@ class Addition (CommutativeOperation):
 
     @override
     @staticmethod
-    def operate_on_constants(left: Constant, right: Constant) -> Constant:
+    def operate_on_constants(left: Constant, right: Constant) -> Expression:
         return left + right
 
     @override
@@ -35,15 +34,18 @@ class Addition (CommutativeOperation):
     def __repr__(self):
         return " + ".join(str(x) for x in self.args)
 
+    @override
     def __add__(self, other: Expression) -> Expression:
         if isinstance(other, Addition):
             return Addition.create(*(list(self.args) + list(other.args)))
         return Addition.create(*(list(self.args) + [other]))
 
+    @override
     def __sub__(self, other: Expression) -> Expression:
         if isinstance(other, Addition):
             return Addition.create(*(list(self.args) + list(-x for x in other.args)))
         return Addition.create(*(list(self.args) + [-other]))
 
+    @override
     def __neg__(self) -> Expression:
         return Addition.create(*(-x for x in self.args))

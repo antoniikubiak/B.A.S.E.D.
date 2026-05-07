@@ -32,6 +32,14 @@ class Constant[T: (int, float)](Expression):
             raise ZeroDivisionError("Cannot invert zero constant")
         return self._wrap(1 / self.value)
 
+    @override
+    def normalize(self) -> Constant:
+        return IntegerConstant.create(1)
+
+    @override
+    def constant_term(self) -> Constant:
+        return self
+
     def is_zero(self) -> bool:
         return abs(self.value) < eps
 
@@ -104,9 +112,11 @@ class Constant[T: (int, float)](Expression):
         return str(self.value)
 
 class IntegerConstant(Constant[int]):
+    @override
     def _cast(self, value: Any) -> int:
         return int(value)
 
 class FloatConstant(Constant[float]):
+    @override
     def _cast(self, value: Any) -> float:
         return float(value)

@@ -9,12 +9,24 @@ from based.Structure.SortPriority import SortPriority
 
 class Multiplication(CommutativeOperation):
     @override
+    def normalize(self) -> Expression:
+        if isinstance(self.args[0], Constant):
+            return Multiplication.create(*self.args[1:])
+        return self
+
+    @override
+    def constant_term(self) -> Constant:
+        if isinstance(self.args[0], Constant):
+            return self.args[0]
+        return IntegerConstant.create(1)
+
+    @override
     def sort_key(self) -> tuple[SortPriority, str | int, tuple[Expression, ...]]:
         return SortPriority.OPERATION, "MUL", self.args
 
     @override
     @staticmethod
-    def operate_on_constants(left: Constant, right: Constant) -> Constant:
+    def operate_on_constants(left: Constant, right: Constant) -> Expression:
         return left * right
 
     @override

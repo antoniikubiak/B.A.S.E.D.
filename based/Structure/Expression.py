@@ -30,6 +30,13 @@ class Expression(Node):
     def __eq__(self, other: Expression) -> bool:
         pass
 
+    def normalize(self) -> Expression:
+        return self
+
+    def constant_term(self) -> 'Constant':
+        from based.Structure.Constant import IntegerConstant
+        return IntegerConstant.create(1)
+
     def __invert__(self) -> Expression:
         from based.Structure.Exponentiation import Exponentiation
         from based.Structure.Constant import IntegerConstant
