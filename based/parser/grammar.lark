@@ -7,9 +7,9 @@ definition: IDENTIFIER "(" param_list? ")" ":=" expression ";"
 
 param_list: IDENTIFIER ("," IDENTIFIER)*
 
-target: ">" expression "as" IDENTIFIER "(" param_w_type_list? ")" "->" TYPE ";"
+target: ">" expression "as" IDENTIFIER "(" param_w_type_list? ")" "->" TYPE ";" -> generate_target
 
-param_w_type_list: TYPE IDENTIFIER ("," TYPE IDENTIFIER)*
+param_w_type_list: TYPE IDENTIFIER ("," TYPE IDENTIFIER)* -> generate_param_with_type_list
 
 ?expression: "if" condition "then" expression ("elif" condition "then" expression)* "else" expression
            | expr
