@@ -30,6 +30,8 @@ class NonCommutativeOperation(Operation, ABC):
         if isinstance(self.right, Constant):
             if self.__class__.is_absorbing(self.right):
                 return self.__class__.identity()
+            if self.__class__.is_identity(self.right):
+                return self.left
 
         if isinstance(self.left, Constant):
             if self.__class__.is_identity(self.left):

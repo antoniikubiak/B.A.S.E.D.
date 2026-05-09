@@ -15,7 +15,7 @@ class Expression(Node):
         pass
 
     @abstractmethod
-    def sort_key(self) -> tuple[SortPriority, str | int, tuple[Expression, ...]]:
+    def sort_key(self) -> tuple[SortPriority, str | int, tuple]:
         pass
 
     @abstractmethod

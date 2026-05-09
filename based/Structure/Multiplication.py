@@ -4,10 +4,29 @@ from typing import override
 from based.Structure.Constant import IntegerConstant, Constant
 from based.Structure.CommutativeOperation import CommutativeOperation
 from based.Structure.Expression import Expression
+from based.Structure.Operation import Operation
 from based.Structure.SortPriority import SortPriority
 
 
 class Multiplication(CommutativeOperation):
+    @override
+    @staticmethod
+    def get_higher_order_operation() -> type[Operation]:
+        from based.Structure.Exponentiation import Exponentiation
+        return Exponentiation
+
+    @override
+    @staticmethod
+    def is_distributive_over(operation: type) -> bool:
+        from based.Structure.Addition import Addition
+        return operation == Addition
+
+    @override
+    def get_parts(self) -> tuple[Expression, Expression]:
+        if isinstance(self.args[0], Constant):
+            return Multiplication.create(*self.args[1:]), self.args[0]
+        return self, Multiplication.identity()
+
     @override
     def normalize(self) -> Expression:
         if isinstance(self.args[0], Constant):
@@ -21,8 +40,8 @@ class Multiplication(CommutativeOperation):
         return IntegerConstant.create(1)
 
     @override
-    def sort_key(self) -> tuple[SortPriority, str | int, tuple[Expression, ...]]:
-        return SortPriority.OPERATION, "MUL", self.args
+    def sort_key(self) -> tuple[SortPriority, str | int, tuple]:
+        return SortPriority.OPERATION, "MUL", tuple(arg.sort_key() for arg in self.args)
 
     @override
     @staticmethod

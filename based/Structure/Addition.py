@@ -3,13 +3,29 @@ from typing import override
 from based.Structure.CommutativeOperation import CommutativeOperation
 from based.Structure.Constant import Constant, IntegerConstant
 from based.Structure.Expression import Expression
+from based.Structure.Operation import Operation
 from based.Structure.SortPriority import SortPriority
 
 
 class Addition (CommutativeOperation):
     @override
-    def sort_key(self) -> tuple[SortPriority, str | int, tuple[Expression, ...]]:
-        return SortPriority.OPERATION, "ADD", self.args
+    @staticmethod
+    def get_higher_order_operation() -> type[Operation]:
+        from based.Structure.Multiplication import Multiplication
+        return Multiplication
+
+    @override
+    @staticmethod
+    def is_distributive_over(operation: type) -> bool:
+        return False
+
+    @override
+    def get_parts(self) -> tuple[Expression, Expression]:
+        return Addition.identity(), self
+
+    @override
+    def sort_key(self) -> tuple[SortPriority, str | int, tuple]:
+        return SortPriority.OPERATION, "ADD", tuple(arg.sort_key() for arg in self.args)
 
     @override
     @staticmethod

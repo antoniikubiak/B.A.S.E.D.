@@ -1,7 +1,7 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import override
 
-from based.Structure.Constant import Constant
+from based.Structure.Constant import Constant, IntegerConstant
 from based.Structure.Expression import Expression
 from based.Structure.Operation import Operation
 
@@ -11,6 +11,11 @@ class CommutativeOperation(Operation, ABC):
 
     def __init__(self, *args: Expression) -> None:
         self.args = tuple(args)
+
+    @staticmethod
+    @abstractmethod
+    def get_higher_order_operation() -> type[Operation]:
+        pass
 
     @override
     def __hash__(self) -> int:
@@ -46,12 +51,37 @@ class CommutativeOperation(Operation, ABC):
 
         self.args = tuple(new_args)
 
+    def __gather_like_terms(self) -> None:
+        term_counts = {}
+        for arg in self.args:
+            term = arg
+            count_change = IntegerConstant.create(1)
+
+            if isinstance(arg, Operation):
+                if arg.is_distributive_over(self.__class__):
+                    term, count_change = arg.get_parts()
+            elif isinstance(arg, Constant):
+                term = arg
+                count_change = IntegerConstant.create(1)
+
+            term_counts[term] = term_counts.get(term, IntegerConstant.create(0)) + count_change
+
+        new_args = []
+        for term, count in term_counts.items():
+            if count == IntegerConstant.create(1):
+                new_args.append(term)
+            else:
+                new_args.append(self.__class__.get_higher_order_operation().create(term, count))
+
+        self.args = tuple(new_args)
+
     @override
     def _simplify(self) -> Expression:
         simplified_args = [arg._simplify() for arg in self.args]
         self.args = tuple(simplified_args)
 
         self.__flatten()
+        self.__gather_like_terms()
         self.__fold_constants()
 
         self.args = tuple(sorted(self.args, key=lambda x: x.sort_key()))

@@ -9,8 +9,17 @@ from based.Structure.SortPriority import SortPriority
 
 class Exponentiation (NonCommutativeOperation):
     @override
-    def sort_key(self) -> tuple[SortPriority, str | int, tuple[Expression, ...]]:
-        return SortPriority.OPERATION, "EXP", (self.left, self.right)
+    @staticmethod
+    def is_distributive_over(operation: type) -> bool:
+        return operation == Multiplication
+
+    @override
+    def get_parts(self) -> tuple[Expression, Expression]:
+        return self.left, self.right
+
+    @override
+    def sort_key(self) -> tuple[SortPriority, str | int, tuple]:
+        return SortPriority.OPERATION, "EXP", (self.left.sort_key(), self.right.sort_key())
 
     @override
     def __neg__(self) -> Expression:
@@ -39,3 +48,6 @@ class Exponentiation (NonCommutativeOperation):
     @override
     def __invert__(self) -> Expression:
         return Exponentiation.create(self.left, -self.right)
+
+    def __repr__(self) -> str:
+        return f"{self.left}^{self.right}"
