@@ -149,3 +149,33 @@ REL_OP: "==" | "!=" | ">" | "<" | ">=" | "<="
 %import common.WS
 %ignore WS
 ```
+
+## TODO
+- [x] Project outline
+- [x] Initial phase
+  - [x] Grammar for LARK
+  - [x] Token table
+  - [x] Code structure
+- [x] Basics of arithmetic engine
+  - [x] Basic operations on constants
+  - [x] Arithmetic operations on variables
+  - [x] Simplification of arithmetic operations with variables
+- [ ] Extended mathematical engine
+  - [ ] Differentiation engine
+  - [ ] Basic mathematical functions implementation (e.g. sin, cos, ln, ...)
+  - [ ] Custom function definition (within `definition` tag)
+    - [ ] Ensure recursive functions work if-else structure
+  - [ ] Shorthand for sum and product evaluation
+- [ ] Basic logic engine
+  - [ ] Constant logic conditions evaluation
+  - [ ] Logic expression to some normal form conversion
+  - [ ] Logic expression simplification
+  - [ ] If-else structure implementation
+- [ ] Syntax and semantics correctness
+  - [ ] Variable and function name scope control
+  - [ ] Syntax errors handling
+  - [ ] Semantic errors handling 
+- [ ] C Code generation
+  - [ ] Basic code generation
+  - [ ] Common subexpression elimination
+- [ ] Simple command line interface
