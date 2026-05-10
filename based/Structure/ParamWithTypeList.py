@@ -2,7 +2,7 @@ from typing import NamedTuple
 
 from based.Structure.Node import Node
 from based.Structure.ReturnType import ReturnType
-from based.Structure.Variable import Variable
+from based.Structure.Expressions.Variable import Variable
 
 class VariableTypePair(NamedTuple):
     var: Variable

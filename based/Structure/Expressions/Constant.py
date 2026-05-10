@@ -2,8 +2,8 @@ from abc import abstractmethod
 from typing import override, Any
 
 from based.Structure.Epsilon import eps
-from based.Structure.Expression import Expression
-from based.Structure.SortPriority import SortPriority
+from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.SortPriority import SortPriority
 
 
 class Constant[T: (int, float)](Expression):
@@ -69,7 +69,7 @@ class Constant[T: (int, float)](Expression):
 
     @override
     def __add__(self, other: Any) -> Expression:
-        from based.Structure.Addition import Addition
+        from based.Structure.Expressions.Operations.Addition import Addition
         if isinstance(other, Constant):
             return self._wrap(self.value + other.value)
         if isinstance(other, Expression):
@@ -78,7 +78,7 @@ class Constant[T: (int, float)](Expression):
 
     @override
     def __sub__(self, other: Any) -> Expression:
-        from based.Structure.Addition import Addition
+        from based.Structure.Expressions.Operations.Addition import Addition
         if isinstance(other, Constant):
             return self._wrap(self.value - other.value)
         if isinstance(other, Expression):
@@ -87,7 +87,7 @@ class Constant[T: (int, float)](Expression):
 
     @override
     def __mul__(self, other: Any) -> Expression:
-        from based.Structure.Multiplication import Multiplication
+        from based.Structure.Expressions.Operations.Multiplication import Multiplication
         if isinstance(other, Constant):
             return self._wrap(self.value * other.value)
         if isinstance(other, Expression):
@@ -96,7 +96,7 @@ class Constant[T: (int, float)](Expression):
 
     @override
     def __truediv__(self, other: Any) -> Expression:
-        from based.Structure.Multiplication import Multiplication
+        from based.Structure.Expressions.Operations.Multiplication import Multiplication
         if isinstance(other, Constant):
             return self._wrap(self.value / other.value)
         if isinstance(other, Expression):
@@ -104,7 +104,7 @@ class Constant[T: (int, float)](Expression):
         return NotImplemented
 
     def __pow__(self, other: Any) -> Expression:
-        from based.Structure.Exponentiation import Exponentiation
+        from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
         if isinstance(other, Constant):
             return self._wrap(self.value ** other.value)
         if isinstance(other, Expression):

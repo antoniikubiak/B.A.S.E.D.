@@ -1,23 +1,23 @@
 from typing import override
 
-from based.Structure.Constant import IntegerConstant, Constant
-from based.Structure.CommutativeOperation import CommutativeOperation
-from based.Structure.Expression import Expression
-from based.Structure.Operation import Operation
-from based.Structure.SortPriority import SortPriority
+from based.Structure.Expressions.Constant import IntegerConstant, Constant
+from based.Structure.Expressions.Operations.CommutativeOperation import CommutativeOperation
+from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.Operations.Operation import Operation
+from based.Structure.Expressions.SortPriority import SortPriority
 
 
 class Multiplication(CommutativeOperation):
     @override
     @staticmethod
     def get_higher_order_operation() -> type[Operation]:
-        from based.Structure.Exponentiation import Exponentiation
+        from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
         return Exponentiation
 
     @override
     @staticmethod
     def is_distributive_over(operation: type) -> bool:
-        from based.Structure.Addition import Addition
+        from based.Structure.Expressions.Operations.Addition import Addition
         return operation == Addition
 
     @override
@@ -66,7 +66,7 @@ class Multiplication(CommutativeOperation):
     def diff(self, var: str) -> Expression:
         #(fgh)' = f'gh + fg'h + fgh' and the same for more vars
 
-        from based.Structure.Addition import Addition
+        from based.Structure.Expressions.Operations.Addition import Addition
 
         derivatives = []
 

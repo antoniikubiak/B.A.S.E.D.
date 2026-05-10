@@ -1,4 +1,4 @@
-from based.Structure.Expression import Expression
+from based.Structure.Expressions.Expression import Expression
 from based.Structure.Node import Node
 from based.Structure.ParamWithTypeList import ParamWithTypeList
 from based.Structure.ReturnType import ReturnType

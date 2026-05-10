@@ -1,16 +1,14 @@
 from lark import Transformer
 
-from based.Structure.Constant import FloatConstant, IntegerConstant
-from based.Structure.Exponentiation import Exponentiation
-from based.Structure.Expression import Expression
+from based.Structure.Expressions.Constant import FloatConstant, IntegerConstant
+from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
+from based.Structure.Expressions.Expression import Expression
 from based.Structure.FunctionDefinition import FunctionDefinition
 from based.Structure.ParamWithTypeList import ParamWithTypeList, VariableTypePair
 from based.Structure.ReturnType import ReturnType
-from based.Structure.Variable import Variable
-from based.Structure.Sin import Sin
-from based.Structure.Cos import Cos
-from based.Structure.Addition import Addition
-from based.Structure.Multiplication import Multiplication
+from based.Structure.Expressions.Variable import Variable
+from based.Structure.Expressions.Functions.Sin import Sin
+from based.Structure.Expressions.Functions.Cos import Cos
 
 
 class TreeTransformer(Transformer):

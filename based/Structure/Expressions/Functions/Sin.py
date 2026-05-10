@@ -1,31 +1,25 @@
 from typing import override
-from based.Structure.Expression import Expression
-from based.Structure.Constant import IntegerConstant, FloatConstant
-import math
+from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.Constant import IntegerConstant, Constant
 
-from based.Structure.SortPriority import SortPriority
+from based.Structure.Expressions.SortPriority import SortPriority
 
 
 class Sin(Expression):
     @override
     def _simplify(self) -> Expression:
-        arg = self.args[0]
-
-        if isinstance(arg, IntegerConstant) or isinstance(arg, FloatConstant):
-            val = arg.value
-            if val == 0:
+        if isinstance(self.args[0], Constant):
+            if self.args[0] == IntegerConstant.create(0):
                 return IntegerConstant.create(0)
-
         return self
 
     @override
-    def sort_key(self):
-        return (SortPriority.FUNCTION, "SIN", self.args[0].sort_key())
+    def sort_key(self) -> tuple[SortPriority, str, tuple]:
+        return SortPriority.FUNCTION, "SIN", self.args[0].sort_key()
 
     @override
     def diff(self, var: str) -> Expression:
-        from based.Structure.Cos import Cos
-        # Wzór: sin(u)' = cos(u) * u'
+        from based.Structure.Expressions.Functions.Cos import Cos
         return Cos.create(self.args[0]) * self.args[0].diff(var)
 
     @override
@@ -38,7 +32,7 @@ class Sin(Expression):
 
     @override
     def __neg__(self) -> Expression:
-        from based.Structure.Constant import IntegerConstant
+        from based.Structure.Expressions.Constant import IntegerConstant
         return self * IntegerConstant.create(-1)
 
     def __repr__(self):

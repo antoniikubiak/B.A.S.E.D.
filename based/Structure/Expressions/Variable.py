@@ -1,9 +1,9 @@
 from typing import override
 
-from based.Structure.Constant import IntegerConstant
-from based.Structure.Expression import Expression
-from based.Structure.Multiplication import Multiplication
-from based.Structure.SortPriority import SortPriority
+from based.Structure.Expressions.Constant import IntegerConstant
+from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.Operations.Multiplication import Multiplication
+from based.Structure.Expressions.SortPriority import SortPriority
 
 
 class Variable(Expression):
@@ -40,5 +40,4 @@ class Variable(Expression):
     def diff(self, var: str) -> Expression:
         if self.name == var:
             return IntegerConstant.create(1)
-
         return IntegerConstant.create(0)

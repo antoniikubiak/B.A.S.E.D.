@@ -1,11 +1,8 @@
-import sys
-import os
 from lark import Lark
 from based.parser.TreeTransformer import TreeTransformer
-from based.Structure.Variable import Variable
 
 # 1. Definiujemy gramatykę (wczytujemy z pliku)
-parser = Lark.open('based/parser/grammar.lark', parser='lalr')
+parser = Lark.open('../parser/grammar.lark', parser='lalr')
 
 # 2. Twój kod wejściowy - tutaj wpisujemy co chcemy zróżniczkować
 # Używamy nowej składni: diff(funkcja, rzad, zmienna)

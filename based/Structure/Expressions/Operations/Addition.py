@@ -1,17 +1,17 @@
 from typing import override
 
-from based.Structure.CommutativeOperation import CommutativeOperation
-from based.Structure.Constant import Constant, IntegerConstant
-from based.Structure.Expression import Expression
-from based.Structure.Operation import Operation
-from based.Structure.SortPriority import SortPriority
+from based.Structure.Expressions.Operations.CommutativeOperation import CommutativeOperation
+from based.Structure.Expressions.Constant import Constant, IntegerConstant
+from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.Operations.Operation import Operation
+from based.Structure.Expressions.SortPriority import SortPriority
 
 
 class Addition (CommutativeOperation):
     @override
     @staticmethod
     def get_higher_order_operation() -> type[Operation]:
-        from based.Structure.Multiplication import Multiplication
+        from based.Structure.Expressions.Operations.Multiplication import Multiplication
         return Multiplication
 
     @override

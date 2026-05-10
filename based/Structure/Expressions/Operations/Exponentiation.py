@@ -1,10 +1,10 @@
 from typing import override
 
-from based.Structure.Constant import Constant, IntegerConstant
-from based.Structure.Expression import Expression
-from based.Structure.Multiplication import Multiplication
-from based.Structure.NonCommutativeOperation import NonCommutativeOperation
-from based.Structure.SortPriority import SortPriority
+from based.Structure.Expressions.Constant import Constant, IntegerConstant
+from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.Operations.Multiplication import Multiplication
+from based.Structure.Expressions.Operations.NonCommutativeOperation import NonCommutativeOperation
+from based.Structure.Expressions.SortPriority import SortPriority
 
 
 class Exponentiation (NonCommutativeOperation):
@@ -59,13 +59,12 @@ class Exponentiation (NonCommutativeOperation):
     def __init__(self, base, exponent, **kwargs):
         super().__init__(base, exponent, **kwargs)
 
-        self.args = (base, exponent)
-
+    @override
     def diff(self, var: str) -> Expression:
-        from based.Structure.Ln import Ln
+        from based.Structure.Expressions.Functions.Ln import Ln
 
-        f = self.args[0]
-        g = self.args[1]
+        f = self.left
+        g = self.right
         term_a = g.diff(var) * Ln.create(f)
         term_b = (g * f.diff(var)) / f
 

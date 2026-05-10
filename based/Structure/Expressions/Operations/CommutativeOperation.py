@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import override
 
-from based.Structure.Constant import Constant, IntegerConstant
-from based.Structure.Expression import Expression
-from based.Structure.Operation import Operation
+from based.Structure.Expressions.Constant import Constant, IntegerConstant
+from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.Operations.Operation import Operation
 
 
 class CommutativeOperation(Operation, ABC):

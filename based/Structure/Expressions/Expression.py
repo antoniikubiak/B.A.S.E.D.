@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from based.Structure.SortPriority import SortPriority
+from based.Structure.Expressions.SortPriority import SortPriority
 from based.Structure.Node import Node
 
 
@@ -69,30 +69,30 @@ class Expression(Node):
         Extracts the numeric coefficient of the expression.
         :return: The `Constant` representing the coefficient, defaulting to 1.
         """
-        from based.Structure.Constant import IntegerConstant
+        from based.Structure.Expressions.Constant import IntegerConstant
         return IntegerConstant.create(1)
 
     def __invert__(self) -> Expression:
-        from based.Structure.Exponentiation import Exponentiation
-        from based.Structure.Constant import IntegerConstant
+        from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
+        from based.Structure.Expressions.Constant import IntegerConstant
         return Exponentiation.create(self, IntegerConstant.create(-1))
 
     def __add__(self, other: Expression) -> Expression:
-        from based.Structure.Addition import Addition
+        from based.Structure.Expressions.Operations.Addition import Addition
         return Addition.create(self, other)
 
     def __sub__(self, other: Expression) -> Expression:
-        from based.Structure.Addition import Addition
+        from based.Structure.Expressions.Operations.Addition import Addition
         return Addition.create(self, -other)
 
     def __mul__(self, other: Expression) -> Expression:
-        from based.Structure.Multiplication import Multiplication
+        from based.Structure.Expressions.Operations.Multiplication import Multiplication
         return Multiplication.create(self, other)
 
     def __truediv__(self, other: Expression) -> Expression:
-        from based.Structure.Multiplication import Multiplication
+        from based.Structure.Expressions.Operations.Multiplication import Multiplication
         return Multiplication.create(self, ~other)
 
     @abstractmethod
-    def diff(self, var: str) -> 'Expression':
+    def diff(self, var: str) -> Expression:
         pass
