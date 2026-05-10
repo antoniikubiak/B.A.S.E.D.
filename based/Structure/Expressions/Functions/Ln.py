@@ -1,6 +1,8 @@
 from typing import override
 
 from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.SortPriority import SortPriority
+
 
 class Ln(Expression):
     """
@@ -43,6 +45,6 @@ class Ln(Expression):
         from based.Structure.Expressions.Constant import IntegerConstant
         return IntegerConstant.create(-1) * self
 
-    @property
-    def sort_key(self):
-        return f"Ln:{self.args[0].sort_key if hasattr(self.args[0], 'sort_key') else str(self.args[0])}"
+    @override
+    def sort_key(self) -> tuple[SortPriority, str, tuple]:
+        return SortPriority.FUNCTION, "LN", self.args[0].sort_key()
