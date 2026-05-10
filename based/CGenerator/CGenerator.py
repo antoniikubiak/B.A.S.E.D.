@@ -1,4 +1,4 @@
-from based.Structure.Function import Function
+from based.Structure.FunctionDefinition import FunctionDefinition
 
 
 class CGenerator:
@@ -11,6 +11,6 @@ class CGenerator:
         self.temp_count = 0
 
     @staticmethod
-    def generate_function_code(function: Function) -> str:
+    def generate_function_code(function: FunctionDefinition) -> str:
         res = f"{function.returns} {function.name} {function.params} {{ return {function.body}; }} }}"
         return res

@@ -4,7 +4,7 @@ from based.Structure.ParamWithTypeList import ParamWithTypeList
 from based.Structure.ReturnType import ReturnType
 
 
-class Function(Node):
+class FunctionDefinition(Node):
     """
     Represents a function definition, including its signature and body.
     """

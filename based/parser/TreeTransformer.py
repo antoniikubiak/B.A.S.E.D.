@@ -3,7 +3,7 @@ from lark import Transformer
 from based.Structure.Constant import FloatConstant, IntegerConstant
 from based.Structure.Exponentiation import Exponentiation
 from based.Structure.Expression import Expression
-from based.Structure.Function import Function
+from based.Structure.FunctionDefinition import FunctionDefinition
 from based.Structure.ParamWithTypeList import ParamWithTypeList, VariableTypePair
 from based.Structure.ReturnType import ReturnType
 from based.Structure.Variable import Variable
@@ -45,7 +45,7 @@ class TreeTransformer(Transformer):
                 res -= item
         return res
 
-    def generate_target(self, items: list[Expression | str | ParamWithTypeList]) -> Function:
+    def generate_target(self, items: list[Expression | str | ParamWithTypeList]) -> FunctionDefinition:
         if len(items) == 4:
             expression = items[0]
             name = items[1]
@@ -68,7 +68,7 @@ class TreeTransformer(Transformer):
             case _:
                 raise TypeError()
 
-        return Function(name, params, return_type, expression)
+        return FunctionDefinition(name, params, return_type, expression)
 
     def generate_param_with_type_list(self, items: list[str]) -> ParamWithTypeList:
         vars_list = []
