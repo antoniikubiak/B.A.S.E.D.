@@ -55,3 +55,18 @@ class Exponentiation (NonCommutativeOperation):
 
     def __repr__(self) -> str:
         return f"{self.left}^{self.right}"
+
+    def __init__(self, base, exponent, **kwargs):
+        super().__init__(base, exponent, **kwargs)
+
+        self.args = (base, exponent)
+
+    def diff(self, var: str) -> Expression:
+        from based.Structure.Ln import Ln
+
+        f = self.args[0]
+        g = self.args[1]
+        term_a = g.diff(var) * Ln.create(f)
+        term_b = (g * f.diff(var)) / f
+
+        return self * (term_a + term_b)

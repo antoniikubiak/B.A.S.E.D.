@@ -75,7 +75,7 @@ class Expression(Node):
     def __invert__(self) -> Expression:
         from based.Structure.Exponentiation import Exponentiation
         from based.Structure.Constant import IntegerConstant
-        return Exponentiation.create(self, IntegerConstant(-1))
+        return Exponentiation.create(self, IntegerConstant.create(-1))
 
     def __add__(self, other: Expression) -> Expression:
         from based.Structure.Addition import Addition
@@ -92,3 +92,7 @@ class Expression(Node):
     def __truediv__(self, other: Expression) -> Expression:
         from based.Structure.Multiplication import Multiplication
         return Multiplication.create(self, ~other)
+
+    @abstractmethod
+    def diff(self, var: str) -> 'Expression':
+        pass

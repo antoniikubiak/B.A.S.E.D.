@@ -64,6 +64,10 @@ class Constant[T: (int, float)](Expression):
         return IntegerConstant.create(result)
 
     @override
+    def diff(self, var: str) -> Expression:
+        return IntegerConstant.create(0)
+
+    @override
     def __add__(self, other: Any) -> Expression:
         from based.Structure.Addition import Addition
         if isinstance(other, Constant):

@@ -62,6 +62,23 @@ class Multiplication(CommutativeOperation):
     def identity() -> Constant:
         return IntegerConstant.create(1)
 
+    @override
+    def diff(self, var: str) -> Expression:
+        #(fgh)' = f'gh + fg'h + fgh' and the same for more vars
+
+        from based.Structure.Addition import Addition
+
+        derivatives = []
+
+        for i in range(len(self.args)):
+            current_args = list(self.args)
+            current_args[i] = self.args[i].diff(var)
+
+            new_mult = Multiplication.create(*current_args)
+            derivatives.append(new_mult)
+
+        return Addition.create(*derivatives)
+
     def __repr__(self):
         return " * ".join(str(x) for x in self.args)
 

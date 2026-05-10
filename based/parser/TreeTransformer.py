@@ -7,6 +7,10 @@ from based.Structure.FunctionDefinition import FunctionDefinition
 from based.Structure.ParamWithTypeList import ParamWithTypeList, VariableTypePair
 from based.Structure.ReturnType import ReturnType
 from based.Structure.Variable import Variable
+from based.Structure.Sin import Sin
+from based.Structure.Cos import Cos
+from based.Structure.Addition import Addition
+from based.Structure.Multiplication import Multiplication
 
 
 class TreeTransformer(Transformer):
@@ -28,21 +32,36 @@ class TreeTransformer(Transformer):
         return Exponentiation.create(items[0], items[1])
 
     def prod(self, items: list[Expression]) -> Expression:
-        res = items[0]
+        from lark import Tree
+        def ensure_expr(item):
+            if isinstance(item, Tree):
+                return item.children[0]
+            return item
+
+        res = ensure_expr(items[0])
         for sign, item in zip(items[1::2], items[2::2]):
+            actual_item = ensure_expr(item)
             if sign == '*':
-                res *= item
+                res *= actual_item
             else:
-                res /= item
+                res /= actual_item
         return res
 
     def add(self, items: list[Expression]) -> Expression:
-        res = items[0]
+        from lark import Tree
+        def ensure_expr(item):
+            if isinstance(item, Tree):
+                return item.children[0]
+            return item
+
+        res = ensure_expr(items[0])
         for sign, item in zip(items[1::2], items[2::2]):
+            actual_item = ensure_expr(item)
+
             if sign == '+':
-                res += item
+                res += actual_item
             else:
-                res -= item
+                res -= actual_item
         return res
 
     def generate_target(self, items: list[Expression | str | ParamWithTypeList]) -> FunctionDefinition:
@@ -70,6 +89,9 @@ class TreeTransformer(Transformer):
 
         return FunctionDefinition(name, params, return_type, expression)
 
+    def start(self, items):
+        return items
+
     def generate_param_with_type_list(self, items: list[str]) -> ParamWithTypeList:
         vars_list = []
         return_type = ReturnType.DOUBLE
@@ -85,3 +107,17 @@ class TreeTransformer(Transformer):
                     raise TypeError()
             vars_list.append(VariableTypePair(Variable.create(var_name), return_type))
         return ParamWithTypeList(vars_list)
+
+    def function_call(self, items):
+        name = str(items[0])
+        from lark import Tree
+        arg = items[1]
+
+        while isinstance(arg, Tree):
+            arg = arg.children[0]
+
+        if name == "sin":
+            return Sin.create(arg)
+        elif name == "cos":
+            return Cos.create(arg)
+        raise ValueError(f"Nieobsługiwana funkcja: {name}")

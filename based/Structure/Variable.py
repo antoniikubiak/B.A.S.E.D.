@@ -35,3 +35,10 @@ class Variable(Expression):
 
     def __repr__(self) -> str:
         return self.name
+
+    @override
+    def diff(self, var: str) -> Expression:
+        if self.name == var:
+            return IntegerConstant.create(1)
+
+        return IntegerConstant.create(0)
