@@ -7,14 +7,27 @@ from based.Structure.Operation import Operation
 
 
 class CommutativeOperation(Operation, ABC):
+    """
+    Abstract base for operations where the order of arguments does not matter.
+    Manages n-ary argument lists and ensures a unique canonical representation.
+    """
     args: tuple[Expression, ...]
 
-    def __init__(self, *args: Expression) -> None:
+    def __init__(self, *args: Expression, **kwargs) -> None:
+        """
+        Initializes a commutative operation with multiple arguments.
+        :param args: A variable number of `Expression` objects.
+        """
+        super().__init__(*args, **kwargs)
         self.args = tuple(args)
 
     @staticmethod
     @abstractmethod
     def get_higher_order_operation() -> type[Operation]:
+        """
+        Identifies the operation used for gathering terms (e.g., `Addition` returns `Multiplication`).
+        :return: The `type` of the higher-order `Operation`.
+        """
         pass
 
     @override
@@ -28,6 +41,10 @@ class CommutativeOperation(Operation, ABC):
         return False
 
     def __flatten(self) -> None:
+        """
+        Applies the Associative Law to merge nested operations of the same type.
+        :return: None
+        """
         new_args = list(self.args)
         for arg in self.args:
                 if isinstance(arg, self.__class__):
@@ -36,6 +53,10 @@ class CommutativeOperation(Operation, ABC):
         self.args = tuple(new_args)
 
     def __fold_constants(self) -> None:
+        """
+        Aggregates all `Constant` nodes within the operation into a single `Constant`.
+        :return: None
+        """
         constant = self.__class__.identity()
         new_args = list(self.args)
         for arg in self.args:
@@ -52,6 +73,10 @@ class CommutativeOperation(Operation, ABC):
         self.args = tuple(new_args)
 
     def __gather_like_terms(self) -> None:
+        """
+        Groups identical symbolic terms and converts them into higher-order operations.
+        :return: None
+        """
         term_counts = {}
         for arg in self.args:
             term = arg
@@ -77,6 +102,10 @@ class CommutativeOperation(Operation, ABC):
 
     @override
     def _simplify(self) -> Expression:
+        """
+        Simplifies the operation by flattening, gathering terms, and folding constants.
+        :return: A simplified `Expression`.
+        """
         simplified_args = [arg._simplify() for arg in self.args]
         self.args = tuple(simplified_args)
 

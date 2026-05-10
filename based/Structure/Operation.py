@@ -5,6 +5,9 @@ from based.Structure.Expression import Expression
 
 
 class Operation(Expression):
+    """
+    Abstract base for all mathematical operations.
+    """
     @staticmethod
     @abstractmethod
     def identity() -> Constant:
@@ -23,11 +26,21 @@ class Operation(Expression):
     @staticmethod
     @abstractmethod
     def is_absorbing(element: Constant) -> bool:
+        """
+        Checks whether `element` is absorbing ('consumes' whole expression).
+        :param element: Element to be checked.
+        :return: True if `element` is absorbing, else False.
+        """
         pass
 
     @staticmethod
     @abstractmethod
     def is_distributive_over(operation: type) -> bool:
+        """
+        Checks if `cls` distributes over the given `operation` type.
+        :param operation: The operation type to check.
+        :return: Boolean indicating whether `cls` distributes over the given `operation` type.
+        """
         pass
 
     @abstractmethod

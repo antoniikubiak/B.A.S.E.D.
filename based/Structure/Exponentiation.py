@@ -47,6 +47,10 @@ class Exponentiation (NonCommutativeOperation):
 
     @override
     def __invert__(self) -> Expression:
+        """
+        Computes the multiplicative inverse by negating the exponent.
+        :return: A new Exponentiation object representing $base^{-exponent}$.
+        """
         return Exponentiation.create(self.left, -self.right)
 
     def __repr__(self) -> str:

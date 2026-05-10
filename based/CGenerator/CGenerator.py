@@ -2,6 +2,9 @@ from based.Structure.Function import Function
 
 
 class CGenerator:
+    """
+    Class that handles all C Code generation, including CSE.
+    """
     def __init__(self):
         self.memory = {}
         self.statements = []

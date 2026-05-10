@@ -7,9 +7,18 @@ from based.Structure.Operation import Operation
 
 
 class NonCommutativeOperation(Operation, ABC):
+    """
+    Abstract base for operations where the order of arguments matters (e.g., exponentiation).
+    """
     left: Expression
     right: Expression
-    def __init__(self, left: Expression, right: Expression) -> None:
+    def __init__(self, left: Expression, right: Expression, *args, **kwargs) -> None:
+        """
+        Initializes a binary non-commutative operation.
+        :param left: The primary operand (e.g., the base).
+        :param right: The secondary operand (e.g., the exponent).
+        """
+        super().__init__(*args, **kwargs)
         self.left = left
         self.right = right
 
@@ -25,6 +34,10 @@ class NonCommutativeOperation(Operation, ABC):
 
     @override
     def _simplify(self) -> Expression:
+        """
+        Simplifies the operation based on identity and absorbing elements.
+        :return: A simplified `Expression`.
+        """
         self.left._simplify()
         self.right._simplify()
         if isinstance(self.right, Constant):

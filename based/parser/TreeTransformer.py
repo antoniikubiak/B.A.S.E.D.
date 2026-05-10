@@ -10,6 +10,9 @@ from based.Structure.Variable import Variable
 
 
 class TreeTransformer(Transformer):
+    """
+    Transformer to convert the Lark parse tree into B.A.S.E.D. Expression objects.
+    """
     def float_num(self, items: list[str]) -> FloatConstant:
         return FloatConstant.create(items[0])
 
@@ -80,5 +83,5 @@ class TreeTransformer(Transformer):
                     return_type = ReturnType.DOUBLE
                 case _:
                     raise TypeError()
-            vars_list.append(VariableTypePair(Variable(var_name), return_type))
+            vars_list.append(VariableTypePair(Variable.create(var_name), return_type))
         return ParamWithTypeList(vars_list)

@@ -1,4 +1,3 @@
-from copy import copy
 from typing import override
 
 from based.Structure.Constant import IntegerConstant, Constant

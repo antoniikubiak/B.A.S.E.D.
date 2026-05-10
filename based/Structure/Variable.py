@@ -21,7 +21,8 @@ class Variable(Expression):
             return self.name == other.name
         return False
 
-    def __init__(self, name):
+    def __init__(self, name, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.name = name
 
     @override

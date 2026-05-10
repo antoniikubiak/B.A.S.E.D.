@@ -7,11 +7,20 @@ from based.Structure.SortPriority import SortPriority
 
 
 class Constant[T: (int, float)](Expression):
-    def __init__(self, value: Any) -> None:
+    """
+    Represents a literal numeric value within an expression.
+    """
+    def __init__(self, value: Any, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         self.value: T = self._cast(value)
 
     @abstractmethod
     def _cast(self, value: Any) -> T:
+        """
+        Converts a raw numeric value into a type of `Constant` subclass.
+        :param value: a value to be converted into a type of `Constant` subclass.
+        :return: `value` wrapped in type `T` appropriate for a subclass of `Constant`.
+        """
         pass
 
     @override
@@ -41,9 +50,15 @@ class Constant[T: (int, float)](Expression):
         return self
 
     def is_zero(self) -> bool:
+        """Checks if the constant value is effectively zero within epsilon bounds."""
         return abs(self.value) < eps
 
     def _wrap(self, result: Any) -> Constant:
+        """
+        Wraps a raw numeric result into the appropriate `Constant` subclass.
+        :param result: A value to be converted into a `Constant`.
+        :return: `Constant` generated from `result`
+        """
         if isinstance(result, float):
             return FloatConstant.create(result)
         return IntegerConstant.create(result)
