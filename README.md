@@ -164,7 +164,7 @@ REL_OP: "==" | "!=" | ">" | "<" | ">=" | "<="
   - [ ] Differentiation engine
   - [ ] Basic mathematical functions implementation (e.g. sin, cos, ln, ...)
   - [ ] Custom function definition (within `definition` tag)
-    - [ ] Ensure recursive functions work if-else structure
+    - [ ] Ensure recursive functions work with if-else structure (probably after code generation done?)
   - [ ] Shorthand for sum and product evaluation
 - [ ] Basic logic engine
   - [ ] Constant logic conditions evaluation
