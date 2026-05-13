@@ -1,24 +1,25 @@
 from abc import ABC, abstractmethod
-from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from typing import override
 from based.Structure.Expressions.Constant import Constant
+from based.Structure.Expressions.Variable import Variable
 
 
-class UnaryFunction(Expression, ABC):
-    def __init__(self, arg: Expression, *args, **kwargs):
+class UnaryFunction(EvaluableExpression, ABC):
+    def __init__(self, arg: EvaluableExpression, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.arg = arg
 
     @abstractmethod
-    def get_derivative_formula(self) -> Expression:
+    def get_derivative_formula(self) -> EvaluableExpression:
         pass
 
     @override
-    def diff(self, var: 'Variable') -> Expression:
+    def diff(self, var: Variable) -> EvaluableExpression:
         return self.get_derivative_formula() * self.arg.diff(var)
 
     @override
-    def _simplify(self) -> Expression:
+    def _simplify(self) -> EvaluableExpression:
         simplified_arg = self.arg._simplify()
 
         if isinstance(simplified_arg, Constant):
@@ -44,6 +45,6 @@ class UnaryFunction(Expression, ABC):
         return hash((self.__class__, self.arg))
 
     @override
-    def __neg__(self) -> Expression:
+    def __neg__(self) -> EvaluableExpression:
         from based.Structure.Expressions.Constant import IntegerConstant
         return IntegerConstant.create(-1) * self

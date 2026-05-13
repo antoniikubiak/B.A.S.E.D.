@@ -1,4 +1,6 @@
 from lark import Lark
+
+from based.Structure.Expressions.Variable import Variable
 from based.parser.TreeTransformer import TreeTransformer
 
 # 1. Definiujemy gramatykę (wczytujemy z pliku)
@@ -11,7 +13,7 @@ input_code = """
 """
 
 
-def run_test(code, var_to_diff="x"):
+def run_test(code, var_to_diff=Variable.create("x")):
     print(f"--- TEST: {code.strip()} ---")
 
     # KROK A: Parsowanie (Tekst -> Surowe drzewo Larka)

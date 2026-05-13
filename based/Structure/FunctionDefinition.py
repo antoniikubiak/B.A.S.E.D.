@@ -1,4 +1,4 @@
-from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Node import Node
 from based.Structure.ParamWithTypeList import ParamWithTypeList
 from based.Structure.ReturnType import ReturnType
@@ -8,7 +8,7 @@ class FunctionDefinition(Node):
     """
     Represents a function definition, including its signature and body.
     """
-    def __init__(self, name: str, params: ParamWithTypeList, returns: ReturnType, body: Expression):
+    def __init__(self, name: str, params: ParamWithTypeList, returns: ReturnType, body: EvaluableExpression):
         """
         Initializes a Function object.
         :param name: Identifier for the function.

@@ -1,7 +1,7 @@
 from typing import override
 
 from based.Structure.Expressions.Constant import Constant, IntegerConstant
-from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.Operations.Multiplication import Multiplication
 from based.Structure.Expressions.Operations.NonCommutativeOperation import NonCommutativeOperation
 from based.Structure.Expressions.SortPriority import SortPriority
@@ -14,7 +14,7 @@ class Exponentiation (NonCommutativeOperation):
         return operation == Multiplication
 
     @override
-    def get_parts(self) -> tuple[Expression, Expression]:
+    def get_parts(self) -> tuple[EvaluableExpression, EvaluableExpression]:
         return self.left, self.right
 
     @override
@@ -22,7 +22,7 @@ class Exponentiation (NonCommutativeOperation):
         return SortPriority.OPERATION, "EXP", (self.left.sort_key(), self.right.sort_key())
 
     @override
-    def __neg__(self) -> Expression:
+    def __neg__(self) -> EvaluableExpression:
         return Multiplication.create(IntegerConstant.create(-1), self)
 
     @override
@@ -32,7 +32,7 @@ class Exponentiation (NonCommutativeOperation):
 
     @override
     @staticmethod
-    def operate_on_constants(left: Constant, right: Constant) -> Expression:
+    def operate_on_constants(left: Constant, right: Constant) -> EvaluableExpression:
         return left ** right
 
     @override
@@ -46,7 +46,7 @@ class Exponentiation (NonCommutativeOperation):
         return element == IntegerConstant.create(0)
 
     @override
-    def __invert__(self) -> Expression:
+    def __invert__(self) -> EvaluableExpression:
         """
         Computes the multiplicative inverse by negating the exponent.
         :return: A new Exponentiation object representing $base^{-exponent}$.
@@ -60,7 +60,7 @@ class Exponentiation (NonCommutativeOperation):
         super().__init__(base, exponent, **kwargs)
 
     @override
-    def diff(self, var: 'Variable') -> Expression:
+    def diff(self, var: 'Variable') -> EvaluableExpression:
         from based.Structure.Expressions.Functions.Ln import Ln
 
         f = self.left

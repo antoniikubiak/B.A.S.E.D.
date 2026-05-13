@@ -1,10 +1,10 @@
 from abc import abstractmethod
 
 from based.Structure.Expressions.Constant import Constant
-from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 
 
-class Operation(Expression):
+class Operation(EvaluableExpression):
     """
     Abstract base for all mathematical operations.
     """
@@ -44,7 +44,7 @@ class Operation(Expression):
         pass
 
     @abstractmethod
-    def get_parts(self) -> tuple[Expression, Expression]:
+    def get_parts(self) -> tuple[EvaluableExpression, EvaluableExpression]:
         """
         Method used in gathering like terms when simplifying operation.
         :return: Tuple consisting of: base-like object and exponent-like object.

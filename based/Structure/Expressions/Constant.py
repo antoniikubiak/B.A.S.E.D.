@@ -2,11 +2,11 @@ from abc import abstractmethod
 from typing import override, Any
 
 from based.Structure.Epsilon import eps
-from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.SortPriority import SortPriority
 
 
-class Constant[T: (int, float)](Expression):
+class Constant[T: (int, float)](EvaluableExpression):
     """
     Represents a literal numeric value within an expression.
     """
@@ -24,11 +24,11 @@ class Constant[T: (int, float)](Expression):
         pass
 
     @override
-    def _simplify(self) -> Expression:
+    def _simplify(self) -> EvaluableExpression:
         return self
 
     @override
-    def sort_key(self) -> tuple[SortPriority, int, tuple[Expression, ...]]:
+    def sort_key(self) -> tuple[SortPriority, int, tuple[EvaluableExpression, ...]]:
         return SortPriority.CONSTANT, self.value, ()
 
     @override
@@ -64,50 +64,50 @@ class Constant[T: (int, float)](Expression):
         return IntegerConstant.create(result)
 
     @override
-    def diff(self, var: 'Variable') -> Expression:
+    def diff(self, var: 'Variable') -> EvaluableExpression:
         return IntegerConstant.create(0)
 
     @override
-    def __add__(self, other: Any) -> Expression:
+    def __add__(self, other: Any) -> EvaluableExpression:
         from based.Structure.Expressions.Operations.Addition import Addition
         if isinstance(other, Constant):
             return self._wrap(self.value + other.value)
-        if isinstance(other, Expression):
+        if isinstance(other, EvaluableExpression):
             return Addition.create(self, other)
         return NotImplemented
 
     @override
-    def __sub__(self, other: Any) -> Expression:
+    def __sub__(self, other: Any) -> EvaluableExpression:
         from based.Structure.Expressions.Operations.Addition import Addition
         if isinstance(other, Constant):
             return self._wrap(self.value - other.value)
-        if isinstance(other, Expression):
+        if isinstance(other, EvaluableExpression):
             return Addition.create(self, -other)
         return NotImplemented
 
     @override
-    def __mul__(self, other: Any) -> Expression:
+    def __mul__(self, other: Any) -> EvaluableExpression:
         from based.Structure.Expressions.Operations.Multiplication import Multiplication
         if isinstance(other, Constant):
             return self._wrap(self.value * other.value)
-        if isinstance(other, Expression):
+        if isinstance(other, EvaluableExpression):
             return Multiplication.create(self, other)
         return NotImplemented
 
     @override
-    def __truediv__(self, other: Any) -> Expression:
+    def __truediv__(self, other: Any) -> EvaluableExpression:
         from based.Structure.Expressions.Operations.Multiplication import Multiplication
         if isinstance(other, Constant):
             return self._wrap(self.value / other.value)
-        if isinstance(other, Expression):
+        if isinstance(other, EvaluableExpression):
             return Multiplication.create(self, ~other)
         return NotImplemented
 
-    def __pow__(self, other: Any) -> Expression:
+    def __pow__(self, other: Any) -> EvaluableExpression:
         from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
         if isinstance(other, Constant):
             return self._wrap(self.value ** other.value)
-        if isinstance(other, Expression):
+        if isinstance(other, EvaluableExpression):
             return Exponentiation.create(self, other)
         return NotImplemented
 

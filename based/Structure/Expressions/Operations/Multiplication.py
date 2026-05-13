@@ -2,7 +2,7 @@ from typing import override
 
 from based.Structure.Expressions.Constant import IntegerConstant, Constant
 from based.Structure.Expressions.Operations.CommutativeOperation import CommutativeOperation
-from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.Operations.Operation import Operation
 from based.Structure.Expressions.SortPriority import SortPriority
 
@@ -21,13 +21,13 @@ class Multiplication(CommutativeOperation):
         return operation == Addition
 
     @override
-    def get_parts(self) -> tuple[Expression, Expression]:
+    def get_parts(self) -> tuple[EvaluableExpression, EvaluableExpression]:
         if isinstance(self.args[0], Constant):
             return Multiplication.create(*self.args[1:]), self.args[0]
         return self, Multiplication.identity()
 
     @override
-    def normalize(self) -> Expression:
+    def normalize(self) -> EvaluableExpression:
         if isinstance(self.args[0], Constant):
             return Multiplication.create(*self.args[1:])
         return self
@@ -44,7 +44,7 @@ class Multiplication(CommutativeOperation):
 
     @override
     @staticmethod
-    def operate_on_constants(left: Constant, right: Constant) -> Expression:
+    def operate_on_constants(left: Constant, right: Constant) -> EvaluableExpression:
         return left * right
 
     @override
@@ -63,7 +63,7 @@ class Multiplication(CommutativeOperation):
         return IntegerConstant.create(1)
 
     @override
-    def diff(self, var: 'Variable') -> Expression:
+    def diff(self, var: 'Variable') -> EvaluableExpression:
         #(fgh)' = f'gh + fg'h + fgh' and the same for more vars
 
         from based.Structure.Expressions.Operations.Addition import Addition
@@ -83,17 +83,17 @@ class Multiplication(CommutativeOperation):
         return " * ".join(str(x) for x in self.args)
 
     @override
-    def __mul__(self, other: Expression) -> Expression:
+    def __mul__(self, other: EvaluableExpression) -> EvaluableExpression:
         if isinstance(other, Multiplication):
             return Multiplication.create(*(list(self.args) + list(other.args)))
         return Multiplication.create(*(list(self.args) + [other]))
 
     @override
-    def __truediv__(self, other: Expression) -> Expression:
+    def __truediv__(self, other: EvaluableExpression) -> EvaluableExpression:
         if isinstance(other, Multiplication):
             return Multiplication.create(*(list(self.args) + list(~x for x in other.args)))
         return Multiplication.create(*(list(self.args) + [~other]))
 
     @override
-    def __neg__(self) -> Expression:
+    def __neg__(self) -> EvaluableExpression:
         return self * IntegerConstant.create(-1)

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import override
 
 from based.Structure.Expressions.Constant import Constant, IntegerConstant
-from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.Operations.Operation import Operation
 
 
@@ -11,9 +11,9 @@ class CommutativeOperation(Operation, ABC):
     Abstract base for operations where the order of arguments does not matter.
     Manages n-ary argument lists and ensures a unique canonical representation.
     """
-    args: tuple[Expression, ...]
+    args: tuple[EvaluableExpression, ...]
 
-    def __init__(self, *args: Expression, **kwargs) -> None:
+    def __init__(self, *args: EvaluableExpression, **kwargs) -> None:
         """
         Initializes a commutative operation with multiple arguments.
         :param args: A variable number of `Expression` objects.
@@ -35,7 +35,7 @@ class CommutativeOperation(Operation, ABC):
         return hash((type(self), self.args))
 
     @override
-    def __eq__(self, other: Expression) -> bool:
+    def __eq__(self, other: EvaluableExpression) -> bool:
         if isinstance(other, self.__class__):
             return self.args == other.args
         return False
@@ -101,7 +101,7 @@ class CommutativeOperation(Operation, ABC):
         self.args = tuple(new_args)
 
     @override
-    def _simplify(self) -> Expression:
+    def _simplify(self) -> EvaluableExpression:
         """
         Simplifies the operation by flattening, gathering terms, and folding constants.
         :return: A simplified `Expression`.

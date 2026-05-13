@@ -2,7 +2,7 @@ from lark import Transformer
 
 from based.Structure.Expressions.Constant import FloatConstant, IntegerConstant
 from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
-from based.Structure.Expressions.Expression import Expression
+from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.FunctionDefinition import FunctionDefinition
 from based.Structure.ParamWithTypeList import ParamWithTypeList, VariableTypePair
 from based.Structure.ReturnType import ReturnType
@@ -24,12 +24,12 @@ class TreeTransformer(Transformer):
     def variable(self, items: list[str]) -> Variable:
         return Variable.create(items[0])
 
-    def power(self, items: list[Expression]) -> Exponentiation | Expression:
+    def power(self, items: list[EvaluableExpression]) -> Exponentiation | EvaluableExpression:
         if len(items) == 1:
             return items[0]
         return Exponentiation.create(items[0], items[1])
 
-    def prod(self, items: list[Expression]) -> Expression:
+    def prod(self, items: list[EvaluableExpression]) -> EvaluableExpression:
         from lark import Tree
         def ensure_expr(item):
             if isinstance(item, Tree):
@@ -45,7 +45,7 @@ class TreeTransformer(Transformer):
                 res /= actual_item
         return res
 
-    def add(self, items: list[Expression]) -> Expression:
+    def add(self, items: list[EvaluableExpression]) -> EvaluableExpression:
         from lark import Tree
         def ensure_expr(item):
             if isinstance(item, Tree):
@@ -62,7 +62,7 @@ class TreeTransformer(Transformer):
                 res -= actual_item
         return res
 
-    def generate_target(self, items: list[Expression | str | ParamWithTypeList]) -> FunctionDefinition:
+    def generate_target(self, items: list[EvaluableExpression | str | ParamWithTypeList]) -> FunctionDefinition:
         if len(items) == 4:
             expression = items[0]
             name = items[1]
