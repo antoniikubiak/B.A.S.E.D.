@@ -1,0 +1,80 @@
+from enum import Enum
+from typing import override
+
+from based.Structure.Expressions import EvaluableExpression
+from based.Structure.Expressions.Constant import IntegerConstant
+from based.Structure.Expressions.Operations.Addition import Addition
+from based.Structure.Expressions.SortPriority import SortPriority
+from based.Structure.LogicExpressions.LogicExpression import LogicExpression
+
+class RelationType(Enum):
+    LEQ = "<="
+    LT = "<"
+    EQ = "=="
+    NEQ = "!="
+    GT = ">"
+    GEQ = ">="
+
+class Condition(LogicExpression):
+    def __init__(self, left_expr: EvaluableExpression, rel_op: str, right_expr: EvaluableExpression, *args, **kwargs) -> None:
+        super().__init__(left_expr, rel_op, right_expr, *args, **kwargs)
+        is_rel_op_good = isinstance(rel_op, str) and rel_op in {"==", "!=", "<", "<=", ">", ">="}
+        if not is_rel_op_good:
+            raise TypeError(f"Relation operator {rel_op} is not supported.")
+        self.left_expr = left_expr
+        self.rel_op = RelationType(rel_op)
+        self.right_expr = right_expr
+
+    @override
+    def _simplify(self) -> LogicExpression:
+        left = self.left_expr - self.right_expr
+        right = IntegerConstant.create(0)
+        if isinstance(left, Addition):
+            constant = left.get_leading_constant()
+            left -= constant
+            right -= constant
+        constant = left.constant_term()
+        left = left.normalize()
+        right /= constant
+        self.left_expr = left
+        self.right_expr = right
+        return self
+
+    @override
+    def __invert__(self) -> LogicExpression:
+        match self.rel_op:
+            case RelationType.LEQ:
+                new_rel_op = RelationType.GT
+            case RelationType.LT:
+                new_rel_op = RelationType.GEQ
+            case RelationType.EQ:
+                new_rel_op = RelationType.NEQ
+            case RelationType.NEQ:
+                new_rel_op = RelationType.EQ
+            case RelationType.GT:
+                new_rel_op = RelationType.LEQ
+            case RelationType.GEQ:
+                new_rel_op = RelationType.LT
+        return LogicExpression.create(self.left, new_rel_op, self.right)
+
+    @override
+    def __and__(self, other: LogicExpression) -> LogicExpression:
+        pass
+
+    @override
+    def __or__(self, other: LogicExpression) -> LogicExpression:
+        pass
+
+    @override
+    def __eq__(self, other: LogicExpression) -> bool:
+        if isinstance(other, Condition):
+            return self.rel_op == other.rel_op and self.right_expr == other.right_expr and self.left_expr == other.left_expr
+        return False
+
+    @override
+    def __hash__(self) -> int:
+        return hash((self.rel_op, self.left_expr, self.right_expr))
+
+    @override
+    def sort_key(self) -> tuple[SortPriority, str | int, tuple]:
+        return SortPriority.FUNCTION, "COND", (self.rel_op.value, self.left_expr.sort_key(), self.right_expr.sort_key())
