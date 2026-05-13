@@ -48,7 +48,7 @@ class Addition (CommutativeOperation):
         return element == Addition.identity()
 
     @override
-    def diff(self, var: str) -> Expression:
+    def diff(self, var: 'Variable') -> Expression:
         return Addition.create(*(arg.diff(var) for arg in self.args))
 
     def __repr__(self):

@@ -94,5 +94,5 @@ class Expression(Node):
         return Multiplication.create(self, ~other)
 
     @abstractmethod
-    def diff(self, var: str) -> Expression:
+    def diff(self, var: 'Variable') -> Expression:
         pass

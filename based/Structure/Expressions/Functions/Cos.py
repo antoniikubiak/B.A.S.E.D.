@@ -17,7 +17,7 @@ class Cos(Expression):
         return SortPriority.FUNCTION, "COS", self.args[0].sort_key()
 
     @override
-    def diff(self, var: Expression) -> Expression:
+    def diff(self, var: 'Variable') -> Expression:
         from based.Structure.Expressions.Functions.Sin import Sin
 
         return -Sin.create(self.args[0])*self.args[0].diff(var)

@@ -26,7 +26,7 @@ class Ln(Expression):
         return self
 
     @override
-    def diff(self, var: str) -> Expression:
+    def diff(self, var: 'Variable') -> Expression:
         f = self.args[0]
         return f.diff(var) / f
 

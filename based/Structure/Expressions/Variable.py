@@ -37,7 +37,7 @@ class Variable(Expression):
         return self.name
 
     @override
-    def diff(self, var: str) -> Expression:
-        if self.name == var:
+    def diff(self, var: 'Variable') -> Expression:
+        if self.name == var.name:
             return IntegerConstant.create(1)
         return IntegerConstant.create(0)

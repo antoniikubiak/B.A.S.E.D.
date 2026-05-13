@@ -63,7 +63,7 @@ class Multiplication(CommutativeOperation):
         return IntegerConstant.create(1)
 
     @override
-    def diff(self, var: str) -> Expression:
+    def diff(self, var: 'Variable') -> Expression:
         #(fgh)' = f'gh + fg'h + fgh' and the same for more vars
 
         from based.Structure.Expressions.Operations.Addition import Addition

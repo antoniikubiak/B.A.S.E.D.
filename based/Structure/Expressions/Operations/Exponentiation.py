@@ -60,7 +60,7 @@ class Exponentiation (NonCommutativeOperation):
         super().__init__(base, exponent, **kwargs)
 
     @override
-    def diff(self, var: str) -> Expression:
+    def diff(self, var: 'Variable') -> Expression:
         from based.Structure.Expressions.Functions.Ln import Ln
 
         f = self.left

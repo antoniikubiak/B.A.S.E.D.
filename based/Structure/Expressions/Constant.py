@@ -64,7 +64,7 @@ class Constant[T: (int, float)](Expression):
         return IntegerConstant.create(result)
 
     @override
-    def diff(self, var: str) -> Expression:
+    def diff(self, var: 'Variable') -> Expression:
         return IntegerConstant.create(0)
 
     @override
