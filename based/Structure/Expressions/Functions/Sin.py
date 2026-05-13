@@ -1,39 +1,22 @@
 from typing import override
-from based.Structure.Expressions.Expression import Expression
-from based.Structure.Expressions.Constant import IntegerConstant, Constant
+import math
+from based.Structure.Expressions.Functions.UnaryFunction import UnaryFunction
 
-from based.Structure.Expressions.SortPriority import SortPriority
-
-
-class Sin(Expression):
+class Sin(UnaryFunction):
     @override
-    def _simplify(self) -> Expression:
-        if isinstance(self.args[0], Constant):
-            if self.args[0] == IntegerConstant.create(0):
-                return IntegerConstant.create(0)
-        return self
-
-    @override
-    def sort_key(self) -> tuple[SortPriority, str, tuple]:
-        return SortPriority.FUNCTION, "SIN", self.args[0].sort_key()
-
-    @override
-    def diff(self, var: 'Variable') -> Expression:
+    def get_derivative_formula(self):
         from based.Structure.Expressions.Functions.Cos import Cos
-        return Cos.create(self.args[0]) * self.args[0].diff(var)
+        return Cos.create(self.arg)
 
     @override
-    def __eq__(self, other: Expression) -> bool:
-        return isinstance(other, Sin) and self.args[0] == other.args[0]
+    def evaluate_numeric(self, value: float):
+        from based.Structure.Expressions.Constant import FloatConstant
+        return FloatConstant.create(math.sin(value))
 
     @override
-    def __hash__(self) -> int:
-        return hash((type(self), self.args[0]))
-
-    @override
-    def __neg__(self) -> Expression:
-        from based.Structure.Expressions.Constant import IntegerConstant
-        return self * IntegerConstant.create(-1)
+    def sort_key(self):
+        from based.Structure.Expressions.SortPriority import SortPriority
+        return SortPriority.FUNCTION, "SIN", (self.arg.sort_key(),)
 
     def __repr__(self):
-        return f"sin({self.args[0]})"
+        return f"sin({self.arg})"
