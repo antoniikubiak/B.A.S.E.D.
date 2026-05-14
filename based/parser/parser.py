@@ -4,9 +4,14 @@ from based.parser.TreeTransformer import TreeTransformer
 
 parser = Lark.open('grammar.lark', parser='lalr')
 
+# tree = parser.parse('''
+# >x*y+x*y^2+y^2*x+2^4 as foo_3(int x, int y) -> double;
+# ''')
+
 tree = parser.parse('''
->x*y+x*y^2+y^2*x+2^4 as foo_3(int x, int y) -> double;
+>if x < 0 then 10 else x as foo_3(int x, int y) -> double;
 ''')
+
 print(tree.pretty())
 tree = TreeTransformer().transform(tree)
 print(tree[0])

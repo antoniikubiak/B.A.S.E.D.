@@ -33,7 +33,7 @@ class LogicVariable(LogicExpression):
         self.name = name
 
     @override
-    def _simplify(self) -> LogicExpression:
+    def simplify(self) -> LogicExpression:
         return self
 
     def __repr__(self) -> str:

@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import override
 
-from based.Structure.Expressions import EvaluableExpression
+from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.EvaluableConstant import IntegerConstant, EvaluableConstant
 from based.Structure.Expressions.Operations.Addition import Addition
 from based.Structure.Expressions.SortPriority import SortPriority

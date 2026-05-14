@@ -1,9 +1,13 @@
 from lark import Transformer
 
+from based.Structure.IfStructure import IfStructure, CondExprPair
 from based.Structure.Expressions.EvaluableConstant import FloatConstant, IntegerConstant
 from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.FunctionDefinition import FunctionDefinition
+from based.Structure.LogicExpressions.Condition import Condition
+from based.Structure.LogicExpressions.LogicConstant import LogicConstant
+from based.Structure.LogicExpressions.LogicOperation import LogicOr, LogicAnd
 from based.Structure.ParamWithTypeList import ParamWithTypeList, VariableTypePair
 from based.Structure.ReturnType import ReturnType
 from based.Structure.Expressions.Variable import Variable
@@ -119,3 +123,21 @@ class TreeTransformer(Transformer):
         elif name == "cos":
             return Cos.create(arg)
         raise ValueError(f"Nieobsługiwana funkcja: {name}")
+
+    def if_struct(self, items: list) -> IfStructure:
+        default = items[-1]
+        items = items[:-1]
+        pairs = tuple(CondExprPair(c, e) for c, e in zip(items[::2], items[1::2]))
+        return IfStructure(pairs, default)
+
+    def logic_or(self, items: list) -> LogicOr:
+        return LogicOr.create(*items)
+
+    def logic_and(self, items: list) -> LogicAnd:
+        return LogicAnd.create(*items)
+
+    def bool_const(self, items: list) -> LogicConstant:
+        return LogicConstant.create(items[0])
+
+    def cond_op(self, items: list) -> Condition:
+        return Condition.create(*items)

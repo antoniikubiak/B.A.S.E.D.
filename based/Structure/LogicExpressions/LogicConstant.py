@@ -18,7 +18,7 @@ class LogicConstant(LogicExpression, Constant):
                 raise TypeError(f"Logic constant cannot be initialized with value of type {type(value)}")
 
     @override
-    def _simplify(self) -> LogicExpression:
+    def simplify(self) -> LogicExpression:
         return self
 
     @override

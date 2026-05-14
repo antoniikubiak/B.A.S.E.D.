@@ -11,7 +11,7 @@ class LogicInversion(LogicExpression):
         self.expr = expr
 
     @override
-    def _simplify(self) -> LogicExpression:
+    def simplify(self) -> LogicExpression:
         if isinstance(self.expr, LogicVariable):
             return self
         return ~self.expr
