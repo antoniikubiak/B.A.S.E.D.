@@ -1,12 +1,14 @@
 from abc import abstractmethod
+from functools import total_ordering
 from typing import override, Any
 
+from based.Structure.Constant import Constant
 from based.Structure.Epsilon import eps
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.SortPriority import SortPriority
 
-
-class Constant[T: (int, float)](EvaluableExpression):
+@total_ordering
+class EvaluableConstant[T: (int, float)](EvaluableExpression, Constant):
     """
     Represents a literal numeric value within an expression.
     """
@@ -24,7 +26,7 @@ class Constant[T: (int, float)](EvaluableExpression):
         pass
 
     @override
-    def _simplify(self) -> EvaluableExpression:
+    def simplify(self) -> EvaluableExpression:
         return self
 
     @override
@@ -36,24 +38,24 @@ class Constant[T: (int, float)](EvaluableExpression):
         return hash(self.value)
 
     @override
-    def __invert__(self) -> Constant:
+    def __invert__(self) -> EvaluableConstant:
         if self.value == 0:
             raise ZeroDivisionError("Cannot invert zero constant")
         return self._wrap(1 / self.value)
 
     @override
-    def normalize(self) -> Constant:
+    def normalize(self) -> EvaluableConstant:
         return IntegerConstant.create(1)
 
     @override
-    def constant_term(self) -> Constant:
+    def constant_term(self) -> EvaluableConstant:
         return self
 
     def is_zero(self) -> bool:
         """Checks if the constant value is effectively zero within epsilon bounds."""
         return abs(self.value) < eps
 
-    def _wrap(self, result: Any) -> Constant:
+    def _wrap(self, result: Any) -> EvaluableConstant:
         """
         Wraps a raw numeric result into the appropriate `Constant` subclass.
         :param result: A value to be converted into a `Constant`.
@@ -70,7 +72,7 @@ class Constant[T: (int, float)](EvaluableExpression):
     @override
     def __add__(self, other: Any) -> EvaluableExpression:
         from based.Structure.Expressions.Operations.Addition import Addition
-        if isinstance(other, Constant):
+        if isinstance(other, EvaluableConstant):
             return self._wrap(self.value + other.value)
         if isinstance(other, EvaluableExpression):
             return Addition.create(self, other)
@@ -79,7 +81,7 @@ class Constant[T: (int, float)](EvaluableExpression):
     @override
     def __sub__(self, other: Any) -> EvaluableExpression:
         from based.Structure.Expressions.Operations.Addition import Addition
-        if isinstance(other, Constant):
+        if isinstance(other, EvaluableConstant):
             return self._wrap(self.value - other.value)
         if isinstance(other, EvaluableExpression):
             return Addition.create(self, -other)
@@ -88,7 +90,7 @@ class Constant[T: (int, float)](EvaluableExpression):
     @override
     def __mul__(self, other: Any) -> EvaluableExpression:
         from based.Structure.Expressions.Operations.Multiplication import Multiplication
-        if isinstance(other, Constant):
+        if isinstance(other, EvaluableConstant):
             return self._wrap(self.value * other.value)
         if isinstance(other, EvaluableExpression):
             return Multiplication.create(self, other)
@@ -97,7 +99,7 @@ class Constant[T: (int, float)](EvaluableExpression):
     @override
     def __truediv__(self, other: Any) -> EvaluableExpression:
         from based.Structure.Expressions.Operations.Multiplication import Multiplication
-        if isinstance(other, Constant):
+        if isinstance(other, EvaluableConstant):
             return self._wrap(self.value / other.value)
         if isinstance(other, EvaluableExpression):
             return Multiplication.create(self, ~other)
@@ -105,37 +107,39 @@ class Constant[T: (int, float)](EvaluableExpression):
 
     def __pow__(self, other: Any) -> EvaluableExpression:
         from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
-        if isinstance(other, Constant):
+        if isinstance(other, EvaluableConstant):
             return self._wrap(self.value ** other.value)
         if isinstance(other, EvaluableExpression):
             return Exponentiation.create(self, other)
         return NotImplemented
 
     @override
-    def __neg__(self) -> Constant:
+    def __neg__(self) -> EvaluableConstant:
         return self._wrap(-self.value)
 
-    def __pos__(self) -> Constant:
+    def __pos__(self) -> EvaluableConstant:
         return self._wrap(self.value)
 
     @override
     def __eq__(self, other: Any) -> bool:
-        if isinstance(other, Constant):
+        if isinstance(other, EvaluableConstant):
             return abs(self.value - other.value) < eps
         return False
 
-    def __ne__(self, other: Any) -> bool:
-        return not self == other
+    def __le__(self, other: Any) -> bool:
+        if isinstance(other, EvaluableConstant):
+            return self.value <= other.value
+        return NotImplemented
 
     def __repr__(self):
         return str(self.value)
 
-class IntegerConstant(Constant[int]):
+class IntegerConstant(EvaluableConstant[int]):
     @override
     def _cast(self, value: Any) -> int:
         return int(value)
 
-class FloatConstant(Constant[float]):
+class FloatConstant(EvaluableConstant[float]):
     @override
     def _cast(self, value: Any) -> float:
         return float(value)

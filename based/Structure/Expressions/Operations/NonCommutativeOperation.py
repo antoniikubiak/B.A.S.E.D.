@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import override
 
-from based.Structure.Expressions.Constant import Constant
+from based.Structure.Expressions.EvaluableConstant import EvaluableConstant
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.Operations.Operation import Operation
 
@@ -33,24 +33,24 @@ class NonCommutativeOperation(Operation, ABC):
         return False
 
     @override
-    def _simplify(self) -> EvaluableExpression:
+    def simplify(self) -> EvaluableExpression:
         """
         Simplifies the operation based on identity and absorbing elements.
         :return: A simplified `Expression`.
         """
-        self.left._simplify()
-        self.right._simplify()
-        if isinstance(self.right, Constant):
-            if self.__class__.is_absorbing(self.right):
+        self.left.simplify()
+        self.right.simplify()
+        if isinstance(self.right, EvaluableConstant):
+            if self.__class__.absorbing_element() == self.right:
                 return self.__class__.identity()
-            if self.__class__.is_identity(self.right):
+            if self.__class__.identity() == self.right:
                 return self.left
 
-        if isinstance(self.left, Constant):
-            if self.__class__.is_identity(self.left):
+        if isinstance(self.left, EvaluableConstant):
+            if self.__class__.identity() == self.left:
                 return self.__class__.identity()
 
-        if isinstance(self.left, Constant) and isinstance(self.right, Constant):
-            return self.__class__.operate_on_constants(self.left, self.right)
+        if isinstance(self.left, EvaluableConstant) and isinstance(self.right, EvaluableConstant):
+            return self.__class__._operate_on_constants(self.left, self.right)
 
         return self

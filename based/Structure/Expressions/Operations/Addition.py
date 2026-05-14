@@ -1,23 +1,40 @@
 from typing import override
 
 from based.Structure.Expressions.Operations.CommutativeOperation import CommutativeOperation
-from based.Structure.Expressions.Constant import Constant, IntegerConstant
+from based.Structure.Expressions.EvaluableConstant import EvaluableConstant, IntegerConstant
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.Operations.Operation import Operation
 from based.Structure.Expressions.SortPriority import SortPriority
 
 
-class Addition (CommutativeOperation):
+class Addition(CommutativeOperation):
+    @override
+    @staticmethod
+    def absorbing_element() -> EvaluableConstant | None:
+        return None
+
+    @override
+    @staticmethod
+    def identity() -> EvaluableConstant:
+        return IntegerConstant.create(0)
+
+    @override
+    @staticmethod
+    def is_idempotent() -> bool:
+        return False
+
     @override
     @staticmethod
     def get_higher_order_operation() -> type[Operation]:
         from based.Structure.Expressions.Operations.Multiplication import Multiplication
         return Multiplication
 
-    def get_leading_constant(self) -> Constant:
-        if isinstance(self.args[0], Constant):
-            return self.args[0]
-        return IntegerConstant.create(0)
+    def get_leading_constant(self) -> EvaluableConstant:
+        first_arg = self.args[0]
+
+        if isinstance(first_arg, EvaluableConstant):
+            return first_arg
+        return Addition.identity()
 
     @override
     @staticmethod
@@ -34,23 +51,8 @@ class Addition (CommutativeOperation):
 
     @override
     @staticmethod
-    def is_absorbing(element: Constant) -> bool:
-        return False
-
-    @override
-    @staticmethod
-    def identity() -> Constant:
-        return IntegerConstant.create(0)
-
-    @override
-    @staticmethod
-    def operate_on_constants(left: Constant, right: Constant) -> EvaluableExpression:
+    def _operate_on_constants(left: EvaluableConstant, right: EvaluableConstant) -> EvaluableExpression:
         return left + right
-
-    @override
-    @staticmethod
-    def is_identity(element: Constant) -> bool:
-        return element == Addition.identity()
 
     @override
     def diff(self, var: 'Variable') -> EvaluableExpression:

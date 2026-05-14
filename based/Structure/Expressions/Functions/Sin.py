@@ -10,7 +10,7 @@ class Sin(UnaryFunction):
 
     @override
     def evaluate_numeric(self, value: float):
-        from based.Structure.Expressions.Constant import FloatConstant
+        from based.Structure.Expressions.EvaluableConstant import FloatConstant
         return FloatConstant.create(math.sin(value))
 
     @override

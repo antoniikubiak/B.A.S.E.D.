@@ -1,6 +1,6 @@
 from typing import override
 
-from based.Structure.Expressions.Constant import IntegerConstant
+from based.Structure.Expressions.EvaluableConstant import IntegerConstant
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.Operations.Multiplication import Multiplication
 from based.Structure.Expressions.SortPriority import SortPriority
@@ -30,7 +30,7 @@ class Variable(EvaluableExpression):
         return Multiplication.create(IntegerConstant(-1), self)
 
     @override
-    def _simplify(self) -> EvaluableExpression:
+    def simplify(self) -> EvaluableExpression:
         return self
 
     def __repr__(self) -> str:

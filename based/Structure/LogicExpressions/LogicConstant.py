@@ -1,9 +1,10 @@
 from typing import override
 
+from based.Structure.Constant import Constant
 from based.Structure.LogicExpressions.LogicExpression import LogicExpression
 
 
-class LogicConstant(LogicExpression):
+class LogicConstant(LogicExpression, Constant):
     def __init__(self, value: str | bool, *args, **kwargs) -> None:
         super().__init__(value, *args, **kwargs)
         if isinstance(self.value, bool):

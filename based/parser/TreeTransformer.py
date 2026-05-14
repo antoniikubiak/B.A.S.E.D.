@@ -1,6 +1,6 @@
 from lark import Transformer
 
-from based.Structure.Expressions.Constant import FloatConstant, IntegerConstant
+from based.Structure.Expressions.EvaluableConstant import FloatConstant, IntegerConstant
 from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.FunctionDefinition import FunctionDefinition

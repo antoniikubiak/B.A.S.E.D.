@@ -1,4 +1,4 @@
-from based.Structure.Expressions.Constant import FloatConstant
+from based.Structure.Expressions.EvaluableConstant import FloatConstant
 import math
 
 class EulerNumber(FloatConstant):

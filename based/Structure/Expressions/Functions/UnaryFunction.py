@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from typing import override
-from based.Structure.Expressions.Constant import Constant
+from based.Structure.Expressions.EvaluableConstant import EvaluableConstant
 from based.Structure.Expressions.Variable import Variable
 
 
@@ -19,10 +19,10 @@ class UnaryFunction(EvaluableExpression, ABC):
         return self.get_derivative_formula() * self.arg.diff(var)
 
     @override
-    def _simplify(self) -> EvaluableExpression:
-        simplified_arg = self.arg._simplify()
+    def simplify(self) -> EvaluableExpression:
+        simplified_arg = self.arg.simplify()
 
-        if isinstance(simplified_arg, Constant):
+        if isinstance(simplified_arg, EvaluableConstant):
             return self.evaluate_numeric(simplified_arg.value)
 
         if simplified_arg is self.arg or simplified_arg == self.arg:
@@ -31,7 +31,7 @@ class UnaryFunction(EvaluableExpression, ABC):
         return self.__class__.create(simplified_arg)
 
     @abstractmethod
-    def evaluate_numeric(self, value: float) -> Constant:
+    def evaluate_numeric(self, value: float) -> EvaluableConstant:
         pass
 
     @override
@@ -46,5 +46,5 @@ class UnaryFunction(EvaluableExpression, ABC):
 
     @override
     def __neg__(self) -> EvaluableExpression:
-        from based.Structure.Expressions.Constant import IntegerConstant
+        from based.Structure.Expressions.EvaluableConstant import IntegerConstant
         return IntegerConstant.create(-1) * self

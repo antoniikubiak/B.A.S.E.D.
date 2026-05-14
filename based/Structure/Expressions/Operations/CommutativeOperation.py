@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import override
 
-from based.Structure.Expressions.Constant import Constant, IntegerConstant
+from based.Structure.Expressions.CommutativeMixin import CommutativeMixin
+from based.Structure.Expressions.EvaluableConstant import EvaluableConstant, IntegerConstant
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.Operations.Operation import Operation
 
 
-class CommutativeOperation(Operation, ABC):
+class CommutativeOperation(CommutativeMixin[EvaluableExpression], Operation):
     """
     Abstract base for operations where the order of arguments does not matter.
     Manages n-ary argument lists and ensures a unique canonical representation.
@@ -40,39 +41,8 @@ class CommutativeOperation(Operation, ABC):
             return self.args == other.args
         return False
 
-    def __flatten(self) -> None:
-        """
-        Applies the Associative Law to merge nested operations of the same type.
-        :return: None
-        """
-        new_args = list(self.args)
-        for arg in self.args:
-                if isinstance(arg, self.__class__):
-                    new_args += arg.args
-                    new_args.remove(arg)
-        self.args = tuple(new_args)
-
-    def __fold_constants(self) -> None:
-        """
-        Aggregates all `Constant` nodes within the operation into a single `Constant`.
-        :return: None
-        """
-        constant = self.__class__.identity()
-        new_args = list(self.args)
-        for arg in self.args:
-            if isinstance(arg, Constant):
-                if self.__class__.is_absorbing(arg):
-                    self.args = (arg, )
-                    return
-                constant = self.__class__.operate_on_constants(constant, arg)
-                new_args.remove(arg)
-
-        if not(self.__class__.is_identity(constant)):
-            new_args.append(constant)
-
-        self.args = tuple(new_args)
-
-    def __gather_like_terms(self) -> None:
+    @override
+    def _convert_args_to_normal_form(self) -> None:
         """
         Groups identical symbolic terms and converts them into higher-order operations.
         :return: None
@@ -85,7 +55,7 @@ class CommutativeOperation(Operation, ABC):
             if isinstance(arg, Operation):
                 if arg.is_distributive_over(self.__class__):
                     term, count_change = arg.get_parts()
-            elif isinstance(arg, Constant):
+            elif isinstance(arg, EvaluableConstant):
                 term = arg
                 count_change = IntegerConstant.create(1)
 
@@ -99,26 +69,3 @@ class CommutativeOperation(Operation, ABC):
                 new_args.append(self.__class__.get_higher_order_operation().create(term, count))
 
         self.args = tuple(new_args)
-
-    @override
-    def _simplify(self) -> EvaluableExpression:
-        """
-        Simplifies the operation by flattening, gathering terms, and folding constants.
-        :return: A simplified `Expression`.
-        """
-        simplified_args = [arg._simplify() for arg in self.args]
-        self.args = tuple(simplified_args)
-
-        self.__flatten()
-        self.__gather_like_terms()
-        self.__fold_constants()
-
-        self.args = tuple(sorted(self.args, key=lambda x: x.sort_key()))
-
-        if len(self.args) == 1:
-            return self.args[0]
-
-        if len(self.args) == 0:
-            return self.__class__.identity()
-
-        return self

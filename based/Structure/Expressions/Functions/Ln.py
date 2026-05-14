@@ -5,12 +5,12 @@ from based.Structure.Expressions.Functions.UnaryFunction import UnaryFunction
 class Ln(UnaryFunction):
     @override
     def get_derivative_formula(self):
-        from based.Structure.Expressions.Constant import IntegerConstant
+        from based.Structure.Expressions.EvaluableConstant import IntegerConstant
         return IntegerConstant.create(1) / self.arg
 
     @override
     def evaluate_numeric(self, value: float):
-        from based.Structure.Expressions.Constant import FloatConstant
+        from based.Structure.Expressions.EvaluableConstant import FloatConstant
         if value <= 0:
             raise ValueError("Logarithm of non-positive number")
         return FloatConstant.create(math.log(value))

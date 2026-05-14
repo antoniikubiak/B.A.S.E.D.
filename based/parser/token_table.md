@@ -1,4 +1,5 @@
 # Token Table for B.A.S.E. grammar
+
 | Token Name   | Pattern / Value                            | Description                                                                                       |
 |:-------------|:-------------------------------------------|:--------------------------------------------------------------------------------------------------|
 | BOOL_CONST   | `true` \| `false`                          | Boolean literals.                                                                                 |

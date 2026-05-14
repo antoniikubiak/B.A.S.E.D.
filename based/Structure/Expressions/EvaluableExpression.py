@@ -24,12 +24,12 @@ class EvaluableExpression(SimplifiableExpression):
         Extracts the numeric coefficient of the expression.
         :return: The `Constant` representing the coefficient, defaulting to 1.
         """
-        from based.Structure.Expressions.Constant import IntegerConstant
+        from based.Structure.Expressions.EvaluableConstant import IntegerConstant
         return IntegerConstant.create(1)
 
     def __invert__(self) -> EvaluableExpression:
         from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
-        from based.Structure.Expressions.Constant import IntegerConstant
+        from based.Structure.Expressions.EvaluableConstant import IntegerConstant
         return Exponentiation.create(self, IntegerConstant.create(-1))
 
     def __add__(self, other: EvaluableExpression) -> EvaluableExpression:

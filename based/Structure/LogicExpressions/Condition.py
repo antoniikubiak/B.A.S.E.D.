@@ -2,9 +2,10 @@ from enum import Enum
 from typing import override
 
 from based.Structure.Expressions import EvaluableExpression
-from based.Structure.Expressions.Constant import IntegerConstant
+from based.Structure.Expressions.EvaluableConstant import IntegerConstant, EvaluableConstant
 from based.Structure.Expressions.Operations.Addition import Addition
 from based.Structure.Expressions.SortPriority import SortPriority
+from based.Structure.LogicExpressions.LogicConstant import LogicConstant
 from based.Structure.LogicExpressions.LogicExpression import LogicExpression
 
 class RelationType(Enum):
@@ -26,16 +27,34 @@ class Condition(LogicExpression):
         self.right_expr = right_expr
 
     @override
-    def _simplify(self) -> LogicExpression:
+    def simplify(self) -> LogicExpression:
         left = self.left_expr - self.right_expr
         right = IntegerConstant.create(0)
+
+        if isinstance(left, EvaluableConstant):
+            match self.rel_op:
+                case RelationType.LEQ:
+                    return LogicConstant.create(left <= right)
+                case RelationType.LT:
+                    return LogicConstant.create(left < right)
+                case RelationType.EQ:
+                    return LogicConstant.create(left == right)
+                case RelationType.NEQ:
+                    return LogicConstant.create(left != right)
+                case RelationType.GT:
+                    return LogicConstant.create(left > right)
+                case RelationType.GEQ:
+                    return LogicConstant.create(left >= right)
+
         if isinstance(left, Addition):
             constant = left.get_leading_constant()
             left -= constant
             right -= constant
+
         constant = left.constant_term()
         left = left.normalize()
         right /= constant
+
         self.left_expr = left
         self.right_expr = right
         return self

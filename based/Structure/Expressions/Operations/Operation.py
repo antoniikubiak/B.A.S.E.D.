@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from based.Structure.Expressions.Constant import Constant
+from based.Structure.Expressions.EvaluableConstant import EvaluableConstant
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 
 
@@ -10,27 +10,17 @@ class Operation(EvaluableExpression):
     """
     @staticmethod
     @abstractmethod
-    def identity() -> Constant:
+    def identity() -> EvaluableConstant:
         pass
 
     @staticmethod
     @abstractmethod
-    def operate_on_constants(left: Constant, right: Constant) -> Constant:
+    def absorbing_element() -> EvaluableConstant:
         pass
 
     @staticmethod
     @abstractmethod
-    def is_identity(element: Constant) -> bool:
-        pass
-
-    @staticmethod
-    @abstractmethod
-    def is_absorbing(element: Constant) -> bool:
-        """
-        Checks whether `element` is absorbing ('consumes' whole expression).
-        :param element: Element to be checked.
-        :return: True if `element` is absorbing, else False.
-        """
+    def _operate_on_constants(left: EvaluableConstant, right: EvaluableConstant) -> EvaluableConstant:
         pass
 
     @staticmethod

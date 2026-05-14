@@ -24,10 +24,10 @@ class SimplifiableExpression(Node):
         :return: An instance that has been immediately processed through the simplification.
         """
         instance = cls(*args, create_key=cls._CREATE_KEY)
-        return instance._simplify()
+        return instance.simplify()
 
     @abstractmethod
-    def _simplify(self) -> SimplifiableExpression:
+    def simplify(self) -> SimplifiableExpression:
         """
         Internal method to reduce the expression to its simplest algebraic form.
         :return: A simplified Expression instance.

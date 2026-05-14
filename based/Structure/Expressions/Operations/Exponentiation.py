@@ -1,13 +1,13 @@
 from typing import override
 
-from based.Structure.Expressions.Constant import Constant, IntegerConstant
+from based.Structure.Expressions.EvaluableConstant import EvaluableConstant, IntegerConstant
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.Operations.Multiplication import Multiplication
 from based.Structure.Expressions.Operations.NonCommutativeOperation import NonCommutativeOperation
 from based.Structure.Expressions.SortPriority import SortPriority
 
 
-class Exponentiation (NonCommutativeOperation):
+class Exponentiation(NonCommutativeOperation):
     @override
     @staticmethod
     def is_distributive_over(operation: type) -> bool:
@@ -27,23 +27,19 @@ class Exponentiation (NonCommutativeOperation):
 
     @override
     @staticmethod
-    def identity() -> Constant:
+    def identity() -> EvaluableConstant:
         return IntegerConstant.create(1)
 
     @override
     @staticmethod
-    def operate_on_constants(left: Constant, right: Constant) -> EvaluableExpression:
+    def absorbing_element() -> EvaluableConstant:
+        return IntegerConstant.create(0)
+
+    @override
+    @staticmethod
+    def _operate_on_constants(left: EvaluableConstant, right: EvaluableConstant) -> EvaluableExpression:
         return left ** right
 
-    @override
-    @staticmethod
-    def is_identity(element: Constant) -> bool:
-        return element == IntegerConstant.create(1)
-
-    @override
-    @staticmethod
-    def is_absorbing(element: Constant) -> bool:
-        return element == IntegerConstant.create(0)
 
     @override
     def __invert__(self) -> EvaluableExpression:
