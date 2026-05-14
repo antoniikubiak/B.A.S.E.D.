@@ -22,6 +22,13 @@ class LogicOperation(CommutativeMixin[LogicExpression], LogicExpression, ABC):
     def is_idempotent() -> bool:
         return True
 
+    @override
+    def _convert_args_to_normal_form(self) -> None:
+        for arg in self.args:
+            if ~arg in self.args:
+                self.args = (self.__class__.absorbing_element(), )
+                return
+
 
 class LogicAnd(LogicOperation):
     @override
