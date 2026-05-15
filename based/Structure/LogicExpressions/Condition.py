@@ -81,7 +81,7 @@ class Condition(LogicExpression):
                 new_rel_op = RelationType.LT
             case _:
                 raise ValueError(f"Relation operator {self.rel_op} is not supported.")
-        return Condition.create(self.left_expr, new_rel_op, self.left_expr)
+        return Condition.create(self.left_expr, new_rel_op, self.right_expr)
 
     @override
     def __and__(self, other: LogicExpression) -> LogicExpression:

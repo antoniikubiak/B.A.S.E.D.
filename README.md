@@ -179,10 +179,10 @@ REL_OP: "==" | "!=" | ">" | "<" | ">=" | "<="
     - [ ] Custom function definition (within `definition` tag)
         - [ ] Ensure recursive functions work with if-else structure (probably after code generation done?)
     - [ ] Shorthand for sum and product evaluation
-- [ ] Basic logic engine
+- [x] Basic logic engine
     - [x] Constant logic conditions evaluation
-    - [ ] Logic expression to some normal form conversion
-    - [ ] Logic expression simplification
+    - [x] Logic expression to some normal form conversion
+    - [x] Logic expression simplification
     - [x] If-else structure implementation
 - [ ] Syntax and semantics correctness
     - [ ] Variable and function name scope control
