@@ -4,10 +4,16 @@ from based.Structure.Expressions.EvaluableConstant import EvaluableConstant, Int
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.Operations.Multiplication import Multiplication
 from based.Structure.Expressions.Operations.NonCommutativeOperation import NonCommutativeOperation
+from based.Structure.Expressions.Operations.Operation import Operation
 from based.Structure.Expressions.SortPriority import SortPriority
 
 
 class Exponentiation(NonCommutativeOperation):
+    @override
+    @staticmethod
+    def _get_lower_order_operation() -> type[Operation]:
+        return Multiplication
+
     @override
     @staticmethod
     def is_distributive_over(operation: type) -> bool:

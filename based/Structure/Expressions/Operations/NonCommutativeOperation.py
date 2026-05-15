@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import override
 
 from based.Structure.Expressions.EvaluableConstant import EvaluableConstant
@@ -32,14 +32,17 @@ class NonCommutativeOperation(Operation, ABC):
             return self.left == other.left and self.right == other.right
         return False
 
+    @staticmethod
+    @abstractmethod
+    def _get_lower_order_operation() -> type[Operation]:
+        pass
+
     @override
     def simplify(self) -> EvaluableExpression:
         """
         Simplifies the operation based on identity and absorbing elements.
         :return: A simplified `Expression`.
         """
-        self.left.simplify()
-        self.right.simplify()
         if isinstance(self.right, EvaluableConstant):
             if self.__class__.absorbing_element() == self.right:
                 return self.__class__.identity()
@@ -52,5 +55,8 @@ class NonCommutativeOperation(Operation, ABC):
 
         if isinstance(self.left, EvaluableConstant) and isinstance(self.right, EvaluableConstant):
             return self.__class__._operate_on_constants(self.left, self.right)
+
+        if isinstance(self.left, self.__class__):
+            return self.__class__.create(self.left.left, self.__class__._get_lower_order_operation().create(self.left.right, self.right))
 
         return self

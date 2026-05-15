@@ -2,7 +2,6 @@ from typing import override
 
 from based.Structure.Expressions.SortPriority import SortPriority
 from based.Structure.LogicExpressions.LogicExpression import LogicExpression
-from based.Structure.LogicExpressions.LogicVariable import LogicVariable
 
 
 class LogicInversion(LogicExpression):
@@ -12,6 +11,7 @@ class LogicInversion(LogicExpression):
 
     @override
     def simplify(self) -> LogicExpression:
+        from based.Structure.LogicExpressions.LogicVariable import LogicVariable
         if isinstance(self.expr, LogicVariable):
             return self
         return ~self.expr
