@@ -41,3 +41,6 @@ class LogicInversion(LogicExpression):
     @override
     def sort_key(self) -> tuple[SortPriority, str | int, tuple]:
         return SortPriority.FUNCTION, "INV", (self.expr.sort_key())
+
+    def __repr__(self) -> str:
+        return f"~{self.expr}"

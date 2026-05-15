@@ -16,14 +16,17 @@ class RelationType(Enum):
     GT = ">"
     GEQ = ">="
 
+    def __str__(self) -> str:
+        return self.value
+
 class Condition(LogicExpression):
-    def __init__(self, left_expr: EvaluableExpression, rel_op: str, right_expr: EvaluableExpression, *args, **kwargs) -> None:
+    def __init__(self, left_expr: EvaluableExpression, rel_op: str | RelationType, right_expr: EvaluableExpression, *args, **kwargs) -> None:
         super().__init__(left_expr, rel_op, right_expr, *args, **kwargs)
-        is_rel_op_good = isinstance(rel_op, str) and rel_op in {"==", "!=", "<", "<=", ">", ">="}
+        is_rel_op_good = (isinstance(rel_op, str) and rel_op in {"==", "!=", "<", "<=", ">", ">="}) or isinstance(rel_op, RelationType)
         if not is_rel_op_good:
             raise TypeError(f"Relation operator {rel_op} is not supported.")
         self.left_expr = left_expr
-        self.rel_op = RelationType(rel_op)
+        self.rel_op = RelationType(rel_op) if isinstance(rel_op, str) else rel_op
         self.right_expr = right_expr
 
     @override
@@ -53,7 +56,8 @@ class Condition(LogicExpression):
 
         constant = left.constant_term()
         left = left.normalize()
-        right /= constant
+        if constant != IntegerConstant.create(0):
+            right /= constant
 
         self.left_expr = left
         self.right_expr = right
@@ -61,6 +65,7 @@ class Condition(LogicExpression):
 
     @override
     def __invert__(self) -> LogicExpression:
+        new_rel_op = RelationType.EQ
         match self.rel_op:
             case RelationType.LEQ:
                 new_rel_op = RelationType.GT
@@ -74,7 +79,9 @@ class Condition(LogicExpression):
                 new_rel_op = RelationType.LEQ
             case RelationType.GEQ:
                 new_rel_op = RelationType.LT
-        return LogicExpression.create(self.left, new_rel_op, self.right)
+            case _:
+                raise ValueError(f"Relation operator {self.rel_op} is not supported.")
+        return Condition.create(self.left_expr, new_rel_op, self.left_expr)
 
     @override
     def __and__(self, other: LogicExpression) -> LogicExpression:
@@ -97,3 +104,6 @@ class Condition(LogicExpression):
     @override
     def sort_key(self) -> tuple[SortPriority, str | int, tuple]:
         return SortPriority.FUNCTION, "COND", (self.rel_op.value, self.left_expr.sort_key(), self.right_expr.sort_key())
+
+    def __repr__(self) -> str:
+        return f"{self.left_expr} {str(self.rel_op)} {self.right_expr}"

@@ -128,7 +128,7 @@ class TreeTransformer(Transformer):
         default = items[-1]
         items = items[:-1]
         pairs = tuple(CondExprPair(c, e) for c, e in zip(items[::2], items[1::2]))
-        return IfStructure(pairs, default)
+        return IfStructure.create(pairs, default)
 
     def logic_or(self, items: list) -> LogicOr:
         return LogicOr.create(*items)

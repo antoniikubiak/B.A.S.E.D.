@@ -27,7 +27,7 @@ class Variable(EvaluableExpression):
 
     @override
     def __neg__(self) -> EvaluableExpression:
-        return Multiplication.create(IntegerConstant(-1), self)
+        return Multiplication.create(IntegerConstant.create(-1), self)
 
     @override
     def simplify(self) -> EvaluableExpression:

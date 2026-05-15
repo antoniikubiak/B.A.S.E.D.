@@ -15,6 +15,7 @@ class IfStructure(EvaluableExpression):
     def __map_expressions(self, foo: Callable[[EvaluableExpression], EvaluableExpression]) -> IfStructure:
         pairs = [CondExprPair(c, foo(e)) for c, e in self.cases]
         return IfStructure.create(pairs, foo(self.default))
+
     def __neg__(self) -> EvaluableExpression:
         return self.__map_expressions(lambda e: -e)
 
@@ -24,7 +25,7 @@ class IfStructure(EvaluableExpression):
         return self.__map_expressions(lambda e: e.diff(var))
 
     def simplify(self) -> SimplifiableExpression:
-        return self.__map_expressions(lambda e: e.simplify())
+        return self
 
     def __hash__(self) -> int:
         return hash(('IF', self.cases, self.default))
@@ -41,3 +42,10 @@ class IfStructure(EvaluableExpression):
         super().__init__(*pairs, default, *args, **kwargs)
         self.cases = pairs
         self.default = default
+
+    def __repr__(self):
+        res = ""
+        for cond, expr in self.cases:
+            res += f"if ({cond}) then {{ {expr} }} else \n"
+        res += f"{{ {self.default} }}"
+        return res

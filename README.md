@@ -182,8 +182,8 @@ REL_OP: "==" | "!=" | ">" | "<" | ">=" | "<="
 - [ ] Basic logic engine
     - [x] Constant logic conditions evaluation
     - [ ] Logic expression to some normal form conversion
-    - [x] Logic expression simplification
-    - [ ] If-else structure implementation
+    - [ ] Logic expression simplification
+    - [x] If-else structure implementation
 - [ ] Syntax and semantics correctness
     - [ ] Variable and function name scope control
     - [ ] Syntax errors handling

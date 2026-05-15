@@ -2,17 +2,19 @@ from typing import override
 
 from based.Structure.Expressions.SortPriority import SortPriority
 from based.Structure.LogicExpressions.LogicExpression import LogicExpression
+from based.Structure.LogicExpressions.LogicInversion import LogicInversion
+from based.Structure.LogicExpressions.LogicOperation import LogicAnd, LogicOr
 
 
 class LogicVariable(LogicExpression):
     def __invert__(self) -> LogicExpression:
-        pass
+        return LogicInversion.create(self)
 
     def __and__(self, other: LogicExpression) -> LogicExpression:
-        pass
+        return LogicAnd.create(self, other)
 
     def __or__(self, other: LogicExpression) -> LogicExpression:
-        pass
+        return LogicOr.create(self, other)
 
     @override
     def sort_key(self) -> tuple[SortPriority, str, tuple]:
