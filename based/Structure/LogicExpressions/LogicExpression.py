@@ -1,9 +1,9 @@
 from abc import abstractmethod, ABC
 
-from based.Structure import SimplifiableExpression
+from based.Structure.SimplifiableExpression import SimplifiableExpression
 
 
-class LogicExpression(SimplifiableExpression, ABC):
+class LogicExpression(SimplifiableExpression):
     """
     Represents a node that can be eventually evaluated to represent a truth value.
     """
