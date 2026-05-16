@@ -1,5 +1,6 @@
 from lark import Transformer
 
+from based.Structure.Expressions.Functions.Ln import Ln
 from based.Structure.IfStructure import IfStructure, CondExprPair
 from based.Structure.Expressions.EvaluableConstant import FloatConstant, IntegerConstant
 from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
@@ -89,6 +90,9 @@ class TreeTransformer(Transformer):
             case _:
                 raise TypeError()
 
+        from based.Structure.FunctionRegistry import FunctionRegistry
+        FunctionRegistry().register(FunctionDefinition(name, params, return_type, expression))
+
         return FunctionDefinition(name, params, return_type, expression)
 
     def start(self, items):
@@ -122,7 +126,12 @@ class TreeTransformer(Transformer):
             return Sin.create(arg)
         elif name == "cos":
             return Cos.create(arg)
-        raise ValueError(f"Nieobsługiwana funkcja: {name}")
+        elif name == "ln":
+            return Ln.create(arg)
+        else:
+            #funkcja użytkownika
+            from based.Structure.UserFunctionCall import UserFunctionCall
+            return UserFunctionCall.create(name, arg)
 
     def if_struct(self, items: list) -> IfStructure:
         default = items[-1]
