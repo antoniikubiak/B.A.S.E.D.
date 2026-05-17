@@ -29,8 +29,8 @@ def run_session_test(code_block, var_to_diff=Variable.create("x")):
 
 if __name__ == "__main__":
     sesja_wielofunkcyjna = """
-        > x * x as f1(double x) -> double;
-        > f1(sin(x)) as f2(double x) -> double;
+        > x * x + y as f1(double x, int y) -> double;
+        > f1(sin(x), y) as f2(double x) -> double;
         """
 
     run_session_test(sesja_wielofunkcyjna)

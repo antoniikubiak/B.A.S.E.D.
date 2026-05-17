@@ -8,10 +8,6 @@ class UserFunctionCall(EvaluableExpression):
         self.name = name
         self.args = (arg,)
 
-    @classmethod
-    def create(cls, name: str, arg: EvaluableExpression) -> EvaluableExpression:
-        instance = cls(name, arg, create_key=cls._CREATE_KEY)
-        return instance.simplify()
 
     def simplify(self) -> EvaluableExpression:
         return self

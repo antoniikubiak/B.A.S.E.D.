@@ -9,9 +9,11 @@ parser = Lark.open('grammar.lark', parser='lalr')
 # ''')
 
 tree = parser.parse('''
->if x < 0 and x >= 0 then 10 else x as foo_3(int x, int y) -> double;
+f3(x) := x + 2;
+> x * x + y as f1(double x, int y) -> double;
+> f1(sin(x), y) as f2(double x) -> double;
 ''')
 
 print(tree.pretty())
 tree = TreeTransformer().transform(tree)
-print(tree[0])
+print(tree)
