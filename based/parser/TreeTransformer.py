@@ -14,6 +14,7 @@ from based.Structure.ReturnType import ReturnType
 from based.Structure.Expressions.Variable import Variable
 from based.Structure.Expressions.Functions.Sin import Sin
 from based.Structure.Expressions.Functions.Cos import Cos
+from based.Structure.Expressions.Functions.Tan import Tan
 
 
 class TreeTransformer(Transformer):
@@ -128,6 +129,8 @@ class TreeTransformer(Transformer):
             return Cos.create(arg)
         elif name == "ln":
             return Ln.create(arg)
+        elif name == "tan":
+            return Tan.create(arg)
         else:
             #funkcja użytkownika
             from based.Structure.UserFunctionCall import UserFunctionCall
@@ -150,3 +153,29 @@ class TreeTransformer(Transformer):
 
     def cond_op(self, items: list) -> Condition:
         return Condition.create(*items)
+
+    def shorthand(self, items):
+        shorthand_type = str(items[0])
+        idx_name = str(items[1])
+        start = int(items[3])
+        end = int(items[5])
+        expression_template = items[6]
+
+        from based.Structure.Expressions.Variable import Variable
+        idx_var = Variable.create(idx_name)
+
+        generated_expressions = []
+
+        for val in range(start, end + 1):
+            from based.Structure.Expressions.EvaluableConstant import IntegerConstant
+            current_val_node = IntegerConstant.create(val)
+
+            step_expr = expression_template.substitute(idx_var, current_val_node)
+            generated_expressions.append(step_expr)
+
+        if shorthand_type == "sum":
+            from based.Structure.Expressions.Operations.Addition import Addition
+            return Addition.create(*generated_expressions)
+        elif shorthand_type == "prod":
+            from based.Structure.Expressions.Operations.Multiplication import Multiplication
+            return Multiplication.create(*generated_expressions)

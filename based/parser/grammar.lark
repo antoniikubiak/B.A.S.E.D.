@@ -37,7 +37,7 @@ param_w_type_list: TYPE IDENTIFIER ("," TYPE IDENTIFIER)* -> generate_param_with
 function_call: IDENTIFIER "(" arg_list? ")"
 arg_list: expr ("," expr)*
 
-shorthand: ("sum" | "prod") "(" IDENTIFIER "from" INT "to" INT ":" expression ")"
+shorthand: SHORTHAND_TYPE "(" IDENTIFIER FROM INT TO INT ":" expression ")"
 derivative: "diff" "(" IDENTIFIER "," INT "," expression ")"
 
 BOOL_CONST.2: "true" | "false"
@@ -46,6 +46,9 @@ TYPE.2: "double" | "float" | "int"
 REL_OP: "==" | "!=" | ">" | "<" | ">=" | "<="
 MUL_OP: "*" | "/"
 ADD_OP: "+" | "-"
+SHORTHAND_TYPE.2: "sum" | "prod"
+FROM.2: "from"
+TO.2: "to"
 
 %import common.CNAME -> IDENTIFIER
 %import common.NUMBER
