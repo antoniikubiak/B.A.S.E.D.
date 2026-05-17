@@ -29,6 +29,7 @@ def run_session_test(code_block, var_to_diff=Variable.create("x")):
 
 if __name__ == "__main__":
     sesja_wielofunkcyjna = """
+        f3(x) := x + 2;
         > x * x + y as f1(double x, int y) -> double;
         > f1(sin(x), y) as f2(double x) -> double;
         """
