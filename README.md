@@ -185,7 +185,7 @@ REL_OP: "==" | "!=" | ">" | "<" | ">=" | "<="
     - [x] Logic expression simplification
     - [x] If-else structure implementation
 - [ ] Syntax and semantics correctness
-    - [ ] Variable and function name scope control
+    - [x] Variable and function name scope control
     - [ ] Syntax errors handling
     - [ ] Semantic errors handling
 - [ ] C Code generation
