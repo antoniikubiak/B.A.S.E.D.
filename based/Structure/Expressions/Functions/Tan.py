@@ -9,6 +9,10 @@ from based.Structure.Expressions.Variable import Variable
 
 class Tan(UnaryFunction):
     @override
+    def __str__(self) -> str:
+        return f"tan({self.arg})"
+
+    @override
     def evaluate(self, var: Variable, val: EvaluableConstant) -> EvaluableExpression:
         return Tan.create(self.arg.evaluate(var, val))
 

@@ -7,6 +7,7 @@ from based.Structure.Expressions.SortPriority import SortPriority
 
 
 class Variable(EvaluableExpression):
+    @override
     def evaluate(self, var: Variable, val: 'EvaluableConstant') -> EvaluableExpression:
         if self == var:
             return val

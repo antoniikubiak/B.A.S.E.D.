@@ -1,5 +1,5 @@
 class FunctionRegistry:
-    #obiekt trzymający funkcje stworzone przez użytkownika
+    """ Obiekt trzymający funkcje stworzone przez użytkownika. """
     _instance = None
 
     def __new__(cls):

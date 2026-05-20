@@ -20,7 +20,6 @@ class RelationType(Enum):
         return self.value
 
 class Condition(LogicExpression):
-
     def __init__(self, left_expr: EvaluableExpression, rel_op: str | RelationType, right_expr: EvaluableExpression, *args, **kwargs) -> None:
         super().__init__(left_expr, rel_op, right_expr, *args, **kwargs)
         is_rel_op_good = (isinstance(rel_op, str) and rel_op in {"==", "!=", "<", "<=", ">", ">="}) or isinstance(rel_op, RelationType)

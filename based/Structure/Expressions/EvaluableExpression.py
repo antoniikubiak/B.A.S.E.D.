@@ -51,3 +51,7 @@ class EvaluableExpression(SimplifiableExpression):
     @abstractmethod
     def diff(self, var: 'Variable') -> EvaluableExpression:
         pass
+
+    @abstractmethod
+    def evaluate(self, var: 'Variable', val: 'EvaluableConstant') -> EvaluableExpression:
+        pass
