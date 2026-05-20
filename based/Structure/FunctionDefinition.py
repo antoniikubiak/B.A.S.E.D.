@@ -13,7 +13,7 @@ class FunctionDefinition(Node):
 
     @override
     def __str__(self) -> str:
-        return f'{self.returns} {self.name}({self.params}) {{\nreturn {self.body} \n}}'
+        return f'{self.returns} {self.name}({self.params}) {{\nreturn {self.body}; \n}}\n'
 
     def __init__(self, name: str, params: ParamWithTypeList, returns: ReturnType, body: EvaluableExpression):
         """

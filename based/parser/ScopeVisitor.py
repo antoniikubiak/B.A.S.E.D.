@@ -39,14 +39,15 @@ class UntypedFooDeclaration(Declaration):
     def __hash__(self):
         return hash(self.name)
 
+
 class ScopeVisitor(visitors.Interpreter):
     def __init__(self):
         self.scopes: list[set[Declaration]] = [set()]
 
-        self.__declare(UntypedFooDeclaration("sin", ParamWithoutTypeList([Variable.create("x")])))
-        self.__declare(UntypedFooDeclaration("cos", ParamWithoutTypeList([Variable.create("x")])))
-        self.__declare(UntypedFooDeclaration("tan", ParamWithoutTypeList([Variable.create("x")])))
-        self.__declare(UntypedFooDeclaration("ln", ParamWithoutTypeList([Variable.create("x")])))
+        self.__declare(UntypedFooDeclaration("sin", ParamWithoutTypeList([Variable.create("x")])), None)
+        self.__declare(UntypedFooDeclaration("cos", ParamWithoutTypeList([Variable.create("x")])), None)
+        self.__declare(UntypedFooDeclaration("tan", ParamWithoutTypeList([Variable.create("x")])), None)
+        self.__declare(UntypedFooDeclaration("ln", ParamWithoutTypeList([Variable.create("x")])), None)
 
     def __enter_scope(self):
         self.scopes.append(set())
@@ -54,10 +55,18 @@ class ScopeVisitor(visitors.Interpreter):
     def __exit_scope(self):
         self.scopes.pop()
 
-    def __declare(self, decl: Declaration):
+    def __declare(self, decl: Declaration, node: Tree | Token | None):
         for existing in self.scopes[-1]:
             if existing.name == decl.name:
-                raise SemanticError(f"'{decl.name}' already declared in this local scope.")
+                if node:
+                    line = node.meta.line if isinstance(node, Tree) else node.line
+                    col = node.meta.column if isinstance(node, Tree) else node.column
+                    msg = f"Line {line}, Column {col}: '{decl.name}' already declared in this local scope."
+                else:
+                    msg = f"'{decl.name}' already declared in this local scope."
+
+                raise SemanticError(msg) from None
+
         self.scopes[-1].add(decl)
 
     def __lookup(self, name: str) -> Declaration | None:
@@ -88,7 +97,6 @@ class ScopeVisitor(visitors.Interpreter):
 
         elif tree.data == "generate_target":
             func_name = tree.children[1].value
-
             param_nodes = [c for c in tree.children if isinstance(c, Tree) and c.data == "generate_param_with_type_list"]
 
             if param_nodes:
@@ -121,11 +129,11 @@ class ScopeVisitor(visitors.Interpreter):
         ]
 
         for definition in definitions:
-            self.__declare(ScopeVisitor.__get_foo_declaration(definition))
+            self.__declare(ScopeVisitor.__get_foo_declaration(definition), definition)
             self.visit(definition)
 
         for target in targets:
-            self.__declare(ScopeVisitor.__get_foo_declaration(target))
+            self.__declare(ScopeVisitor.__get_foo_declaration(target), target)
             self.visit(target)
 
         self.__exit_scope()
@@ -139,7 +147,7 @@ class ScopeVisitor(visitors.Interpreter):
             p_node = param_nodes[0]
             for child in p_node.children:
                 if isinstance(child, Token) and child.type == "IDENTIFIER":
-                    self.__declare(VarDeclaration(child.value, ReturnType.DOUBLE))
+                    self.__declare(VarDeclaration(child.value, ReturnType.DOUBLE), child)
 
         for child in tree.children[1:]:
             if isinstance(child, Tree):
@@ -147,7 +155,7 @@ class ScopeVisitor(visitors.Interpreter):
 
         self.__exit_scope()
 
-    def generate_target(self, tree):
+    def generate_target(self, tree: Tree):
         self.__enter_scope()
 
         param_nodes = [c for c in tree.children if isinstance(c, Tree) and c.data == "generate_param_with_type_list"]
@@ -155,34 +163,39 @@ class ScopeVisitor(visitors.Interpreter):
             p_node = param_nodes[0]
             tokens = [t for t in p_node.children if isinstance(t, Token) and t.value != ","]
             for v_type, name in zip(tokens[0::2], tokens[1::2]):
-                self.__declare(VarDeclaration(name.value, ReturnType[v_type.value.upper()]))
+                self.__declare(VarDeclaration(name.value, ReturnType[v_type.value.upper()]), name)
 
         self.visit_children(tree)
-
         self.__exit_scope()
 
-    def shorthand(self, tree):
+    def shorthand(self, tree: Tree):
         self.__enter_scope()
 
-        loop_var = tree.children[1].value
-        self.__declare(VarDeclaration(loop_var, ReturnType.INT))
+        loop_var_token = tree.children[1]
+        self.__declare(VarDeclaration(loop_var_token.value, ReturnType.INT), loop_var_token)
 
         self.visit_children(tree)
         self.__exit_scope()
 
-    def variable(self, tree):
-        var_name = tree.children[0].value
-        decl = self.__lookup(var_name)
+    def variable(self, tree: Tree):
+        var_token = tree.children[0]
+        decl = self.__lookup(var_token.value)
 
         if decl is None or not isinstance(decl, VarDeclaration):
-            raise SemanticError(f"Variable '{var_name}' is used but not declared in this scope.")
+            raise SemanticError(
+                f"Line {var_token.line}, Column {var_token.column}: "
+                f"Variable '{var_token.value}' is used but not declared in this scope."
+            )
 
     def function_call(self, tree: Tree):
-        func_name = tree.children[0].value
-        decl = self.__lookup(func_name)
+        func_token = tree.children[0]
+        decl = self.__lookup(func_token.value)
 
         if decl is None or not isinstance(decl, (TypedFooDeclaration, UntypedFooDeclaration)):
-            raise SemanticError(f"Function '{func_name}' is called but not defined.")
+            raise SemanticError(
+                f"Line {func_token.line}, Column {func_token.column}: "
+                f"Function '{func_token.value}' is called but not defined."
+            )
 
         arg_nodes = [c for c in tree.children if isinstance(c, Tree) and c.data == "arg_list"]
         arg_count = 0
@@ -194,15 +207,21 @@ class ScopeVisitor(visitors.Interpreter):
         expected_count = len(decl.param_list.variables)
 
         if arg_count != expected_count:
-            raise SemanticError(f"Function '{func_name}' expects {expected_count} arguments, but got {arg_count}.")
+            raise SemanticError(
+                f"Line {func_token.line}, Column {func_token.column}: "
+                f"Function '{func_token.value}' expects {expected_count} arguments, but got {arg_count}."
+            )
 
         self.visit_children(tree)
 
     def differentiate(self, tree: Tree):
-        var_name = tree.children[0].value
-        decl = self.__lookup(var_name)
+        var_token = tree.children[0]
+        decl = self.__lookup(var_token.value)
 
         if decl is None or not isinstance(decl, VarDeclaration):
-            raise SemanticError(f"Variable '{var_name}' used in derivative expression target is not declared.")
+            raise SemanticError(
+                f"Line {var_token.line}, Column {var_token.column}: "
+                f"Variable '{var_token.value}' used in derivative expression target is not declared."
+            )
 
         self.visit_children(tree)

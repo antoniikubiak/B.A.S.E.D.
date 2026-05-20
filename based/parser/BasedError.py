@@ -1,6 +1,9 @@
 class BasedError(Exception):
     pass
 
+class DeclarationError(BasedError):
+    pass
+
 class SemanticError(BasedError):
     pass
 
