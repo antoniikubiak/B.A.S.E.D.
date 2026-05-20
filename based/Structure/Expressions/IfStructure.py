@@ -23,8 +23,9 @@ class IfStructure(EvaluableExpression):
     def __str__(self) -> str:
         res = ""
         for cond, expr in self.cases:
-            res += f"if ({cond}) {{ \n {expr} \n }} else "
-        res += f"{{ \n {self.default} \n }}"
+            res += f"({cond}) ? ({expr}) : "
+
+        res += f"({self.default})"
         return res
 
     def __map_expressions(self, foo: Callable[[EvaluableExpression], EvaluableExpression]) -> IfStructure:

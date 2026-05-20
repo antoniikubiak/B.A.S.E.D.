@@ -181,3 +181,11 @@ class TreeTransformer(Transformer):
 
     def negate(self, items: list):
         return -items[0]
+
+    def differentiate(self, items: list) -> EvaluableExpression:
+        var = Variable.create(items[0])
+        count = int(items[1])
+        expr: EvaluableExpression = items[2]
+        for i in range(count):
+            expr = expr.diff(var)
+        return expr
