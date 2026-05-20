@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABC
 
+from based.Structure.Expressions.EvaluableConstant import EvaluableConstant
 from based.Structure.SimplifiableExpression import SimplifiableExpression
 
 
@@ -18,4 +19,8 @@ class LogicExpression(SimplifiableExpression):
 
     @abstractmethod
     def __or__(self, other: LogicExpression) -> LogicExpression:
+        pass
+
+    @abstractmethod
+    def evaluate(self, var: 'Variable', val: 'EvaluableConstant') -> LogicExpression:
         pass

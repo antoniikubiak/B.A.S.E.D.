@@ -6,6 +6,10 @@ from based.Structure.LogicExpressions.LogicExpression import LogicExpression
 
 
 class LogicConstant(LogicExpression, Constant):
+    @override
+    def evaluate(self, var: 'Variable', val: 'EvaluableConstant') -> LogicExpression:
+        return self
+
     def __hash__(self) -> int:
         return hash(self.value)
 
@@ -52,5 +56,6 @@ class LogicConstant(LogicExpression, Constant):
             return self.value == other.value
         return False
 
-    def __repr__(self) -> str:
-        return "true" if self.value else "false"
+    @override
+    def __str__(self) -> str:
+        return "1" if self.value else "0"

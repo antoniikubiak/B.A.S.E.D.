@@ -1,9 +1,17 @@
 from typing import override
 import math
+
+from based.Structure.Expressions.EvaluableConstant import EvaluableConstant
+from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.Functions.UnaryFunction import UnaryFunction
+from based.Structure.Expressions.Variable import Variable
 
 
 class Tan(UnaryFunction):
+    @override
+    def evaluate(self, var: Variable, val: EvaluableConstant) -> EvaluableExpression:
+        return Tan.create(self.arg.evaluate(var, val))
+
     @override
     def get_derivative_formula(self):
         from based.Structure.Expressions.Functions.Cos import Cos

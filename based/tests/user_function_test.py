@@ -4,7 +4,7 @@ from based.parser.TreeTransformer import TreeTransformer
 from based.Structure.FunctionRegistry import FunctionRegistry
 
 # 1. Wczytujemy parser
-parser = Lark.open('../parser/grammar.lark', parser='lalr')
+parser = Lark.open('based/parser/grammar.lark', parser='lalr')
 
 
 def run_session_test(code_block, var_to_diff=Variable.create("x")):
@@ -29,9 +29,8 @@ def run_session_test(code_block, var_to_diff=Variable.create("x")):
 
 if __name__ == "__main__":
     sesja_wielofunkcyjna = """
-        f3(x) := x + 2;
-        > x * x + y as f1(double x, int y) -> double;
-        > f1(sin(x), y) as f2(double x) -> double;
+        > x * x as f1(double x) -> double;
+        > f1(sin(x), y) + 2 as f2(double x) -> double;
         """
 
     run_session_test(sesja_wielofunkcyjna)

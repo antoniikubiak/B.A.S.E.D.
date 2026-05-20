@@ -45,6 +45,9 @@ class LogicOperation(CommutativeMixin[LogicExpression], LogicExpression, ABC):
     def sort_key(self) -> tuple[SortPriority, str | int, tuple]:
         return SortPriority.OPERATION, self.__class__.__name__, tuple(a.sort_key() for a in self.args)
 
+    @override
+    def evaluate(self, var: 'Variable', val: 'EvaluableConstant') -> LogicExpression:
+        return self.__class__.create(*(arg.evaluate(var, val) for arg in self.args))
 
 
 class LogicAnd(LogicOperation):
@@ -77,6 +80,10 @@ class LogicAnd(LogicOperation):
     def __repr__(self) -> str:
         return " & ".join(str(a) for a in self.args)
 
+    @override
+    def __str__(self) -> str:
+        return " && ".join(str(a) for a in self.args)
+
 
 class LogicOr(LogicOperation):
     @override
@@ -104,6 +111,10 @@ class LogicOr(LogicOperation):
         if isinstance(other, LogicOr):
             return LogicOr.create(*self.args, *other.args)
         return LogicOr.create(*self.args, other)
+
+    @override
+    def __str__(self) -> str:
+        return " || ".join(str(a) for a in self.args)
 
     def __repr__(self) -> str:
         return " | ".join(str(a) for a in self.args)

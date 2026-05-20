@@ -10,6 +10,10 @@ from based.Structure.Expressions.SortPriority import SortPriority
 
 class Exponentiation(NonCommutativeOperation):
     @override
+    def evaluate(self, var: 'Variable', val: EvaluableConstant) -> EvaluableExpression:
+        return Exponentiation.create(self.left.evaluate(var, val), self.right.evaluate(var, val))
+
+    @override
     @staticmethod
     def _get_lower_order_operation() -> type[Operation]:
         return Multiplication
@@ -55,8 +59,11 @@ class Exponentiation(NonCommutativeOperation):
         """
         return Exponentiation.create(self.left, -self.right)
 
-    def __repr__(self) -> str:
-        return f"{self.left}^{self.right}"
+    @override
+    def __str__(self) -> str:
+        if isinstance(self.right, IntegerConstant):
+            return " * ".join([str(self.left)] * self.right.value)
+        return f"pow({self.left}, {self.right})"
 
     def __init__(self, base, exponent, **kwargs):
         super().__init__(base, exponent, **kwargs)

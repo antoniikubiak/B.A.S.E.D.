@@ -6,7 +6,7 @@ class EulerNumber(FloatConstant):
         super().__init__(math.e, **kwargs)
 
     def __str__(self) -> str:
-        return "e"
+        return "M_E"
 
     def __repr__(self) -> str:
         return "EulerNumber()"

@@ -20,6 +20,7 @@ class RelationType(Enum):
         return self.value
 
 class Condition(LogicExpression):
+
     def __init__(self, left_expr: EvaluableExpression, rel_op: str | RelationType, right_expr: EvaluableExpression, *args, **kwargs) -> None:
         super().__init__(left_expr, rel_op, right_expr, *args, **kwargs)
         is_rel_op_good = (isinstance(rel_op, str) and rel_op in {"==", "!=", "<", "<=", ">", ">="}) or isinstance(rel_op, RelationType)
@@ -28,6 +29,10 @@ class Condition(LogicExpression):
         self.left_expr = left_expr
         self.rel_op = RelationType(rel_op) if isinstance(rel_op, str) else rel_op
         self.right_expr = right_expr
+
+    @override
+    def evaluate(self, var: 'Variable', val: 'EvaluableConstant') -> LogicExpression:
+        return Condition.create(self.left_expr.evaluate(var, val), self.rel_op, self.right_expr.evaluate(var, val))
 
     @override
     def simplify(self) -> LogicExpression:
@@ -104,6 +109,10 @@ class Condition(LogicExpression):
     @override
     def sort_key(self) -> tuple[SortPriority, str | int, tuple]:
         return SortPriority.FUNCTION, "COND", (self.rel_op.value, self.left_expr.sort_key(), self.right_expr.sort_key())
+
+    @override
+    def __str__(self) -> str:
+        return f"{self.left_expr} {self.rel_op.value} {self.right_expr}"
 
     def __repr__(self) -> str:
         return f"{self.left_expr} {str(self.rel_op)} {self.right_expr}"

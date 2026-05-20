@@ -1,5 +1,4 @@
 from abc import abstractmethod
-from typing import Any, Self
 
 from based.Structure.SimplifiableExpression import SimplifiableExpression
 
@@ -52,19 +51,3 @@ class EvaluableExpression(SimplifiableExpression):
     @abstractmethod
     def diff(self, var: 'Variable') -> EvaluableExpression:
         pass
-
-    def substitute(self, var: 'Variable', new_expr: 'EvaluableExpression') -> EvaluableExpression | SimplifiableExpression:
-        from based.Structure.Expressions.Variable import Variable
-
-        if isinstance(self, Variable) and self.name == var.name:
-            return new_expr
-
-        if hasattr(self, 'args') and self.args:
-            substituted_args = [arg.substitute(var, new_expr) for arg in self.args]
-
-            if hasattr(self, 'create'):
-                return self.create(*substituted_args)
-            else:
-                return type(self)(*substituted_args)
-
-        return self

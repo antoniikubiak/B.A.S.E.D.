@@ -3,16 +3,30 @@ from typing import NamedTuple, Callable, override
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.SortPriority import SortPriority
 from based.Structure.Expressions.Variable import Variable
-from based.Structure.LogicExpressions.Condition import Condition
 from based.Structure.LogicExpressions.LogicConstant import LogicConstant
+from based.Structure.LogicExpressions.LogicExpression import LogicExpression
 from based.Structure.SimplifiableExpression import SimplifiableExpression
 
 
 class CondExprPair(NamedTuple):
-    cond: Condition
+    cond: LogicExpression
     expr: EvaluableExpression
 
 class IfStructure(EvaluableExpression):
+    def evaluate(self, var: 'Variable', val: 'EvaluableConstant') -> EvaluableExpression:
+        return IfStructure.create(
+            (CondExprPair(cond.evaluate(var, val), expr.evaluate(var, val)) for cond, expr in self.cases),
+            self.default.evaluate(var, val)
+        )
+
+    @override
+    def __str__(self) -> str:
+        res = ""
+        for cond, expr in self.cases:
+            res += f"if ({cond}) {{ \n {expr} \n }} else "
+        res += f"{{ \n {self.default} \n }}"
+        return res
+
     def __map_expressions(self, foo: Callable[[EvaluableExpression], EvaluableExpression]) -> IfStructure:
         pairs = [CondExprPair(c, foo(e)) for c, e in self.cases]
         return IfStructure.create(pairs, foo(self.default))

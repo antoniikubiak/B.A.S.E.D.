@@ -1,8 +1,12 @@
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
+from based.Structure.Expressions.SortPriority import SortPriority
 from based.Structure.FunctionRegistry import FunctionRegistry
 
 
 class UserFunctionCall(EvaluableExpression):
+    def evaluate(self, var: 'Variable', val: 'EvaluableConstant') -> EvaluableExpression:
+        self.args = tuple(a.evaluate(var, val) for a in self.args)
+
     def __init__(self, name: str, arg: EvaluableExpression, **kwargs):
         super().__init__(**kwargs)
         self.name = name
@@ -27,7 +31,7 @@ class UserFunctionCall(EvaluableExpression):
 
         body_diff = body.diff(internal_var)
 
-        substituted_body_diff = body_diff.substitute(internal_var, self.args[0])
+        substituted_body_diff = body_diff.evaluate(internal_var, self.args[0])
 
         return substituted_body_diff * inner_diff
 
@@ -41,11 +45,10 @@ class UserFunctionCall(EvaluableExpression):
     def __eq__(self, other):
         if not isinstance(other, UserFunctionCall):
             return False
-        return self.name == other.name and self.args[0] == other.args[0]
+        return self.name == other.name and self.args == other.args
 
     def __hash__(self):
         return hash((self.name, self.args[0]))
 
-    @property
     def sort_key(self):
-        return f"UserFunc:{self.name}:{self.args[0].sort_key if hasattr(self.args[0], 'sort_key') else str(self.args[0])}"
+        return SortPriority.OTHER, self.name, tuple(arg.sort_key() for arg in self.args)

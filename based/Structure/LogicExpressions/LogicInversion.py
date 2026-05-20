@@ -5,6 +5,9 @@ from based.Structure.LogicExpressions.LogicExpression import LogicExpression
 
 
 class LogicInversion(LogicExpression):
+    def evaluate(self, var: 'Variable', val: 'EvaluableConstant') -> LogicExpression:
+        return LogicInversion.create(self.expr.evaluate(var, val))
+
     def __init__(self, expr: LogicExpression, *args, **kwargs) -> None:
         super().__init__(expr, *args, **kwargs)
         self.expr = expr
@@ -42,5 +45,6 @@ class LogicInversion(LogicExpression):
     def sort_key(self) -> tuple[SortPriority, str | int, tuple]:
         return SortPriority.FUNCTION, "INV", (self.expr.sort_key())
 
-    def __repr__(self) -> str:
+    @override
+    def __str__(self) -> str:
         return f"~{self.expr}"

@@ -131,8 +131,13 @@ class EvaluableConstant[T: (int, float)](EvaluableExpression, Constant):
             return self.value <= other.value
         return NotImplemented
 
-    def __repr__(self):
+    @override
+    def __str__(self):
         return str(self.value)
+
+    @override
+    def evaluate(self, var: 'Variable', val: EvaluableConstant) -> EvaluableExpression:
+        return self
 
 class IntegerConstant(EvaluableConstant[int]):
     @override

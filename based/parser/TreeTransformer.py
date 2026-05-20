@@ -1,7 +1,7 @@
 from lark import Transformer
 
 from based.Structure.Expressions.Functions.Ln import Ln
-from based.Structure.IfStructure import IfStructure, CondExprPair
+from based.Structure.Expressions.IfStructure import IfStructure, CondExprPair
 from based.Structure.Expressions.EvaluableConstant import FloatConstant, IntegerConstant
 from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
@@ -58,14 +58,14 @@ class TreeTransformer(Transformer):
                 return item.children[0]
             return item
 
-        res = ensure_expr(items[0])
+        res = items[0]
         for sign, item in zip(items[1::2], items[2::2]):
-            actual_item = ensure_expr(item)
+            # actual_item = ensure_expr(item)
 
             if sign == '+':
-                res += actual_item
+                res += item
             else:
-                res -= actual_item
+                res -= item
         return res
 
     def generate_target(self, items: list[EvaluableExpression | str | ParamWithTypeList]) -> FunctionDefinition:
@@ -133,7 +133,7 @@ class TreeTransformer(Transformer):
             return Tan.create(arg)
         else:
             #funkcja użytkownika
-            from based.Structure.UserFunctionCall import UserFunctionCall
+            from based.Structure.Expressions.UserFunctionCall import UserFunctionCall
             return UserFunctionCall.create(name, arg)
 
     def if_struct(self, items: list) -> IfStructure:
@@ -170,8 +170,7 @@ class TreeTransformer(Transformer):
             from based.Structure.Expressions.EvaluableConstant import IntegerConstant
             current_val_node = IntegerConstant.create(val)
 
-            step_expr = expression_template.substitute(idx_var, current_val_node)
-            generated_expressions.append(step_expr)
+            generated_expressions.append(expression_template.evaluate(idx_var, current_val_node))
 
         if shorthand_type == "sum":
             from based.Structure.Expressions.Operations.Addition import Addition
@@ -179,3 +178,6 @@ class TreeTransformer(Transformer):
         elif shorthand_type == "prod":
             from based.Structure.Expressions.Operations.Multiplication import Multiplication
             return Multiplication.create(*generated_expressions)
+
+    def negate(self, items: list):
+        return -items[0]

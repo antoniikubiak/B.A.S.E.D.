@@ -9,6 +9,11 @@ from based.Structure.Expressions.SortPriority import SortPriority
 
 class Addition(CommutativeOperation):
     @override
+    def evaluate(self, var: 'Variable', val: EvaluableConstant) -> EvaluableExpression:
+        return Addition.create(*(arg.evaluate(var, val) for arg in self.args))
+
+
+    @override
     @staticmethod
     def absorbing_element() -> EvaluableConstant | None:
         return None
@@ -58,7 +63,8 @@ class Addition(CommutativeOperation):
     def diff(self, var: 'Variable') -> EvaluableExpression:
         return Addition.create(*(arg.diff(var) for arg in self.args))
 
-    def __repr__(self):
+    @override
+    def __str__(self):
         return " + ".join(str(x) for x in self.args)
 
     @override

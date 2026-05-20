@@ -23,7 +23,7 @@ param_w_type_list: TYPE IDENTIFIER ("," TYPE IDENTIFIER)* -> generate_param_with
 
 ?expr: term (ADD_OP term)* -> add
 ?term: factor (MUL_OP factor)* -> prod
-?factor: "-" factor
+?factor: "-" factor -> negate
        | power
 ?power: atom ("^" power)? -> power
 

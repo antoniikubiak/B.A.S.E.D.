@@ -7,6 +7,11 @@ from based.Structure.Expressions.SortPriority import SortPriority
 
 
 class Variable(EvaluableExpression):
+    def evaluate(self, var: Variable, val: 'EvaluableConstant') -> EvaluableExpression:
+        if self == var:
+            return val
+        return self
+
     @override
     def sort_key(self) -> tuple[SortPriority, str, tuple[EvaluableExpression, ...]]:
         return SortPriority.VARIABLE, self.name, ()
@@ -33,7 +38,8 @@ class Variable(EvaluableExpression):
     def simplify(self) -> EvaluableExpression:
         return self
 
-    def __repr__(self) -> str:
+    @override
+    def __str__(self) -> str:
         return self.name
 
     @override

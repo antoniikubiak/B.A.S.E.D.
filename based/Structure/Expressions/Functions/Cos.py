@@ -1,8 +1,17 @@
 from typing import override
 import math
+
+from based.Structure.Expressions.EvaluableConstant import EvaluableConstant
+from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.Functions.UnaryFunction import UnaryFunction
+from based.Structure.Expressions.Variable import Variable
+
 
 class Cos(UnaryFunction):
+    @override
+    def evaluate(self, var: Variable, val: EvaluableConstant) -> EvaluableExpression:
+        return Cos.create(self.arg.evaluate(var, val))
+
     @override
     def get_derivative_formula(self):
         from based.Structure.Expressions.Functions.Sin import Sin
@@ -19,5 +28,6 @@ class Cos(UnaryFunction):
         from based.Structure.Expressions.SortPriority import SortPriority
         return SortPriority.FUNCTION, "COS", (self.arg.sort_key(),)
 
-    def __repr__(self):
+    @override
+    def __str__(self):
         return f"cos({self.arg})"

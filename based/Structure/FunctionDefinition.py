@@ -1,3 +1,5 @@
+from typing import override
+
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Node import Node
 from based.Structure.ParamWithTypeList import ParamWithTypeList
@@ -8,6 +10,11 @@ class FunctionDefinition(Node):
     """
     Represents a function definition, including its signature and body.
     """
+
+    @override
+    def __str__(self) -> str:
+        return f'{self.returns} {self.name}({self.params}) {{\nreturn {self.body} \n}}'
+
     def __init__(self, name: str, params: ParamWithTypeList, returns: ReturnType, body: EvaluableExpression):
         """
         Initializes a Function object.

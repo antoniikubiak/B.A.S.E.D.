@@ -9,6 +9,10 @@ from based.Structure.Expressions.SortPriority import SortPriority
 
 class Multiplication(CommutativeOperation):
     @override
+    def evaluate(self, var: 'Variable', val: EvaluableConstant) -> EvaluableExpression:
+        return Multiplication.create(*(arg.evaluate(var, val) for arg in self.args))
+
+    @override
     @staticmethod
     def is_idempotent() -> bool:
         return False
@@ -80,7 +84,8 @@ class Multiplication(CommutativeOperation):
 
         return Addition.create(*derivatives)
 
-    def __repr__(self):
+    @override
+    def __str__(self):
         return " * ".join(str(x) for x in self.args)
 
     @override

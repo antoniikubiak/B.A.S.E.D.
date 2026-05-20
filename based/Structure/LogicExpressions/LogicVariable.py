@@ -7,6 +7,9 @@ from based.Structure.LogicExpressions.LogicOperation import LogicAnd, LogicOr
 
 
 class LogicVariable(LogicExpression):
+    def evaluate(self, var: 'Variable', val: 'EvaluableConstant') -> LogicExpression:
+        return self
+
     def __invert__(self) -> LogicExpression:
         return LogicInversion.create(self)
 
@@ -38,5 +41,5 @@ class LogicVariable(LogicExpression):
     def simplify(self) -> LogicExpression:
         return self
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         return self.name
