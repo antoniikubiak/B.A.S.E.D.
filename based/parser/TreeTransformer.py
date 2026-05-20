@@ -9,7 +9,7 @@ from based.Structure.FunctionDefinition import FunctionDefinition
 from based.Structure.LogicExpressions.Condition import Condition
 from based.Structure.LogicExpressions.LogicConstant import LogicConstant
 from based.Structure.LogicExpressions.LogicOperation import LogicOr, LogicAnd
-from based.Structure.ParamWithTypeList import ParamWithTypeList, VariableTypePair
+from based.Structure.ParamList import ParamWithTypeList, VariableTypePair
 from based.Structure.ReturnType import ReturnType
 from based.Structure.Expressions.Variable import Variable
 from based.Structure.Expressions.Functions.Sin import Sin

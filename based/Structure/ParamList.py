@@ -18,3 +18,12 @@ class ParamWithTypeList(Node):
     def __str__(self) -> str:
         res = ", ".join([str(var) for var in self.variables])
         return res
+
+class ParamWithoutTypeList(Node):
+    def __init__(self, variables: list[Variable]):
+        self.variables = variables
+
+    @override
+    def __str__(self) -> str:
+        res = ", ".join([str(var) for var in self.variables])
+        return res

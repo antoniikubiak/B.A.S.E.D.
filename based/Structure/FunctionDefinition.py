@@ -2,7 +2,7 @@ from typing import override
 
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Node import Node
-from based.Structure.ParamWithTypeList import ParamWithTypeList
+from based.Structure.ParamList import ParamWithTypeList
 from based.Structure.ReturnType import ReturnType
 
 
