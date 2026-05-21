@@ -191,4 +191,5 @@ REL_OP: "==" | "!=" | ">" | "<" | ">=" | "<="
 - [x] C Code generation
     - [x] Basic code generation
     - [x] Common subexpression elimination
-- [ ] Simple command line interface
+- [x] Simple command line interface
+- [ ] Add useful usage examples
