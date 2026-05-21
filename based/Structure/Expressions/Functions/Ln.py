@@ -20,11 +20,12 @@ class Ln(CallableFunction):
         return IntegerConstant.create(1) / self.args[0]
 
     @override
-    def evaluate_numeric(self, value: float):
+    def evaluate_numeric(self, value: list[float]) -> EvaluableConstant:
         from based.Structure.Expressions.EvaluableConstant import FloatConstant
-        if value <= 0:
+        raw_value = value[0]
+        if raw_value <= 0:
             raise ValueError("Logarithm of non-positive number")
-        return FloatConstant.create(math.log(value))
+        return FloatConstant.create(math.log(raw_value))
 
     @override
     def sort_key(self):

@@ -1,0 +1,21 @@
+loss(w, x, y) := (1.0 / (1.0 + 2.71828 ^ (- (w * x)))) - y;
+squared_error(w, x, y) := loss(w, x, y) ^ 2;
+
+exp_taylor(x) := sum(i from 0 to 5 : (x ^ i) / fact(i));
+
+cube_minus_target(x, target) := x ^ 3 - target;
+
+newton_step(x, target) := x - cube_minus_target(x, target) / diff(x, 1, cube_minus_target(x, target));
+
+
+> diff(w, 1, squared_error(w, x, y)) as compute_gradient(double w, double x, double y) -> double;
+
+
+> if n <= 1 then 1.0 else n * fact(n - 1) as fact(int n) -> int;
+> exp_taylor(val) as compile_exp(double val) -> double;
+
+>   if iterations == 0 then
+        guess
+    else
+        optimize_cbrt(newton_step(guess, radicand), radicand, iterations - 1)
+as optimize_cbrt(double guess, double radicand, int iterations) -> double;

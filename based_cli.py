@@ -12,7 +12,7 @@ def get_platform_extension() -> str:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="B.A.S.E.D. Language Compiler Interface"
+        description="B.A.S.E.D. Language parser Interface"
     )
     parser.add_argument(
         "input",
@@ -74,7 +74,7 @@ def main():
         print(f"Success! Generated library saved to: {os.path.abspath(output_file)}")
 
     except Exception as e:
-        print(f"Compiler error encountered: {e}", file=sys.stderr)
+        print(f"parser error encountered: {e}", file=sys.stderr)
         sys.exit(1)
 
     finally:

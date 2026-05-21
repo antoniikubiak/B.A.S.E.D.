@@ -1,0 +1,6 @@
+uv run python based_cli.py /examples/demo.based -o libmathcore.so
+
+gcc main.c -L. -lmathcore -o live_demo -lm
+
+export LD_LIBRARY_PATH=.
+./live_demo

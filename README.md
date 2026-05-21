@@ -192,4 +192,4 @@ REL_OP: "==" | "!=" | ">" | "<" | ">=" | "<="
     - [x] Basic code generation
     - [x] Common subexpression elimination
 - [x] Simple command line interface
-- [ ] Add useful usage examples
+- [x] Add useful usage examples

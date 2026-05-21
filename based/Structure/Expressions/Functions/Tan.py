@@ -31,9 +31,9 @@ class Tan(CallableFunction):
         return Exponentiation.create(cos_node, minus_two)
 
     @override
-    def evaluate_numeric(self, value: float):
+    def evaluate_numeric(self, value: list[float]) -> EvaluableConstant:
         from based.Structure.Expressions.EvaluableConstant import FloatConstant
-        return FloatConstant.create(math.tan(value))
+        return FloatConstant.create(math.tan(value[0]))
 
     @override
     def sort_key(self):

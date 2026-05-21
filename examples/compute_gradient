@@ -1,0 +1,4 @@
+loss(w, x, y) := (1.0 / (1.0 + 2.71828 ^ (- (w * x)))) - y;
+squared_error(w, x, y) := loss(w, x, y) ^ 2;
+
+> diff(w, 1, squared_error(w, x, y)) as compute_gradient(double w, double x, double y) -> double;

@@ -4,7 +4,7 @@ from based.parser.BasedCompiler import BasedCompiler
 from based.parser.ScopeVisitor import ScopeVisitor
 from based.parser.TreeTransformer import TreeTransformer
 
-parser = Lark.open('grammar.lark', parser='lalr')
+parser = Lark.open('../based/parser/grammar.lark', parser='lalr')
 
 # tree = parser.parse('''
 # >x*y+x*y^2+y^2*x+2^4 as foo_3(int x, int y) -> double;
@@ -63,5 +63,11 @@ displacement(t, v0, a) := v0 * t + 0.5 * a * t ^ 2;
   as total_energy(double time, double vx, double ax) -> double;
 """
 
+test = """
+exp_taylor(x) := sum(i from 0 to 5 : (x ^ i) / fact(i));
 
-print(BasedCompiler.compile(code_cse_test))
+> if n <= 1 then 1.0 else n * fact(n - 1) as fact(int n) -> int;
+> exp_taylor(val) as compile_exp(double val) -> double;
+"""
+
+print(BasedCompiler.compile(test))

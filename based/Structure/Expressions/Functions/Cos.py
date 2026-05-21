@@ -21,9 +21,9 @@ class Cos(CallableFunction):
             raise ValueError(f"Cannot differentiate cos function at argument {position}, since it accepts only 1 argument.")
 
     @override
-    def evaluate_numeric(self, value: float):
+    def evaluate_numeric(self, value: list[float]) -> EvaluableConstant:
         from based.Structure.Expressions.EvaluableConstant import FloatConstant
-        return FloatConstant.create(math.cos(value))
+        return FloatConstant.create(math.cos(value[0]))
 
     @override
     def sort_key(self):

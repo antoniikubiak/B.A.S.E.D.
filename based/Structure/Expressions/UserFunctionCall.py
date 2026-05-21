@@ -1,13 +1,18 @@
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.Expressions.Functions.UserFunction import UserFunction
 from based.Structure.Expressions.SortPriority import SortPriority
+from based.Structure.FunctionDefinition import FunctionDefinition
 from based.Structure.FunctionRegistry import FunctionRegistry
 
+_inlining_stack = set()
 
 class UserFunctionCall(EvaluableExpression):
     def evaluate(self, var: 'Variable', val: 'EvaluableConstant') -> EvaluableExpression:
-        self.args = tuple(a.evaluate(var, val) for a in self.args)
-        return self
+        evaluated_args = tuple(a.evaluate(var, val) for a in self.args)
+        result = UserFunctionCall.__new__(UserFunctionCall)
+        result.name = self.name
+        result.args = evaluated_args
+        return result
 
     def __init__(self, name: str, *args: EvaluableExpression, **kwargs):
         super().__init__(name, *args, **kwargs)
@@ -15,14 +20,33 @@ class UserFunctionCall(EvaluableExpression):
         self.args = args
 
     def simplify(self) -> EvaluableExpression:
+        simplified_args = tuple(arg.simplify() for arg in self.args)
+
         registry = FunctionRegistry()
         func_def = registry.get(self.name)
-        if isinstance(func_def, UserFunction):
+
+        if func_def is None:
+            self.args = simplified_args
+            return self
+
+        if isinstance(func_def, FunctionDefinition) or getattr(func_def, "is_compiled", False):
+            self.args = simplified_args
+            return self
+
+        if self.name in _inlining_stack:
+            self.args = simplified_args
+            return self
+
+        _inlining_stack.add(self.name)
+        try:
             inlined_expr = func_def.body
-            for i, arg in enumerate(self.args):
+            for i, arg in enumerate(simplified_args):
                 inlined_expr = inlined_expr.evaluate(func_def.params[i], arg)
-            return inlined_expr
-        return self
+
+            return inlined_expr.simplify()
+
+        finally:
+            _inlining_stack.remove(self.name)
 
     def diff(self, var: 'Variable') -> EvaluableExpression:
         registry = FunctionRegistry()

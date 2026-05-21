@@ -18,15 +18,23 @@ class CallableFunction(EvaluableExpression, ABC):
     def diff(self, var: Variable) -> EvaluableExpression:
         return sum((self.get_derivative_formula(i) * arg.diff(var) for i, arg in enumerate(self.args)), IntegerConstant.create(0))
 
-    @override
     def simplify(self) -> EvaluableExpression:
         simplified_args = [a.simplify() for a in self.args]
 
         if all(isinstance(arg, EvaluableConstant) for arg in simplified_args):
-            return self.evaluate_numeric(simplified_args)
+            raw_values = [arg.value for arg in simplified_args]
+            return self.evaluate_numeric(raw_values)
 
-        self.args = tuple(x for x in simplified_args)
+        if list(self.args) != simplified_args:
+            return self.__class__(*simplified_args)
+
         return self
+
+    @override
+    def evaluate(self, var: Variable, value: EvaluableExpression) -> EvaluableExpression:
+        evaluated_args = [arg.evaluate(var, value) for arg in self.args]
+        from based.Structure.Expressions.UserFunctionCall import UserFunctionCall
+        return UserFunctionCall.create(self.name, *evaluated_args)
 
     @abstractmethod
     def evaluate_numeric(self, value: list[float]) -> EvaluableConstant:

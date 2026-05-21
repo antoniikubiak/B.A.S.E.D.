@@ -43,6 +43,7 @@ class UntypedFooDeclaration(Declaration):
 class ScopeVisitor(visitors.Interpreter):
     def __init__(self):
         self.scopes: list[set[Declaration]] = [set()]
+        self.current_function: str | None = None
 
         self.__declare(UntypedFooDeclaration("sin", ParamWithoutTypeList([Variable.create("x")])), None)
         self.__declare(UntypedFooDeclaration("cos", ParamWithoutTypeList([Variable.create("x")])), None)
@@ -130,43 +131,60 @@ class ScopeVisitor(visitors.Interpreter):
 
         for definition in definitions:
             self.__declare(ScopeVisitor.__get_foo_declaration(definition), definition)
-            self.visit(definition)
 
         for target in targets:
             self.__declare(ScopeVisitor.__get_foo_declaration(target), target)
+
+        for definition in definitions:
+            self.visit(definition)
+
+        for target in targets:
             self.visit(target)
 
         self.__exit_scope()
 
-
     def definition(self, tree: Tree):
-        self.__enter_scope()
+        func_name = tree.children[0].value
+        old_func = self.current_function
+        self.current_function = func_name
 
-        param_nodes = [c for c in tree.children if isinstance(c, Tree) and c.data == "param_list"]
-        if param_nodes:
-            p_node = param_nodes[0]
-            for child in p_node.children:
-                if isinstance(child, Token) and child.type == "IDENTIFIER":
-                    self.__declare(VarDeclaration(child.value, ReturnType.DOUBLE), child)
+        try:
+            self.__enter_scope()
 
-        for child in tree.children[1:]:
-            if isinstance(child, Tree):
-                self.visit(child)
+            param_nodes = [c for c in tree.children if isinstance(c, Tree) and c.data == "param_list"]
+            if param_nodes:
+                p_node = param_nodes[0]
+                for child in p_node.children:
+                    if isinstance(child, Token) and child.type == "IDENTIFIER":
+                        self.__declare(VarDeclaration(child.value, ReturnType.DOUBLE), child)
 
-        self.__exit_scope()
+            for child in tree.children[1:]:
+                if isinstance(child, Tree):
+                    self.visit(child)
+
+            self.__exit_scope()
+        finally:
+            self.current_function = old_func
 
     def generate_target(self, tree: Tree):
-        self.__enter_scope()
+        func_name = tree.children[1].value
+        old_func = self.current_function
+        self.current_function = func_name
 
-        param_nodes = [c for c in tree.children if isinstance(c, Tree) and c.data == "generate_param_with_type_list"]
-        if param_nodes:
-            p_node = param_nodes[0]
-            tokens = [t for t in p_node.children if isinstance(t, Token) and t.value != ","]
-            for v_type, name in zip(tokens[0::2], tokens[1::2]):
-                self.__declare(VarDeclaration(name.value, ReturnType[v_type.value.upper()]), name)
+        try:
+            self.__enter_scope()
 
-        self.visit_children(tree)
-        self.__exit_scope()
+            param_nodes = [c for c in tree.children if isinstance(c, Tree) and c.data == "generate_param_with_type_list"]
+            if param_nodes:
+                p_node = param_nodes[0]
+                tokens = [t for t in p_node.children if isinstance(t, Token) and t.value != ","]
+                for v_type, name in zip(tokens[0::2], tokens[1::2]):
+                    self.__declare(VarDeclaration(name.value, ReturnType[v_type.value.upper()]), name)
+
+            self.visit_children(tree)
+            self.__exit_scope()
+        finally:
+            self.current_function = old_func
 
     def shorthand(self, tree: Tree):
         self.__enter_scope()
@@ -196,6 +214,14 @@ class ScopeVisitor(visitors.Interpreter):
                 f"Line {func_token.line}, Column {func_token.column}: "
                 f"Function '{func_token.value}' is called but not defined."
             )
+
+        if self.current_function is not None and func_token.value == self.current_function:
+            if isinstance(decl, UntypedFooDeclaration):
+                raise SemanticError(
+                    f"Line {func_token.line}, Column {func_token.column}: "
+                    f"Inline function '{func_token.value}' cannot be called recursively. "
+                    f"Use explicit compilation targets (starting with '>') for recursion."
+                )
 
         arg_nodes = [c for c in tree.children if isinstance(c, Tree) and c.data == "arg_list"]
         arg_count = 0
