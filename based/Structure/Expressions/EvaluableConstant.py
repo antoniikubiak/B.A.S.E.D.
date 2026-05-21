@@ -61,9 +61,9 @@ class EvaluableConstant[T: (int, float)](EvaluableExpression, Constant):
         :param result: A value to be converted into a `Constant`.
         :return: `Constant` generated from `result`
         """
-        if isinstance(result, float):
-            return FloatConstant.create(result)
-        return IntegerConstant.create(result)
+        if abs(result - int(result)) < eps:
+            return IntegerConstant.create(int(result))
+        return FloatConstant.create(result)
 
     @override
     def diff(self, var: 'Variable') -> EvaluableExpression:

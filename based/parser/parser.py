@@ -40,5 +40,28 @@ f1(x) := x;
 """
 code3 = """> diff(x, 1, ln(x)) as f(int x) -> double;"""
 
+code4 = """
+displacement(t, v0, a) := 0.0 + v0 * t + 0.5 * a * t ^ 2;
+hypot(x, y) := (x ^ 2 + y ^ 2) ^ 0.5;
 
-print(BasedCompiler.compile(code2))
+> hypot(displacement(time, vx, ax), displacement(time, vy, ay)) as compute_radial_distance(double time, double vx, double ax, double vy, double ay) -> double;
+> 2 * compute_radial_distance(time, vx, ax, vy, ay) as double_compute(double time, double vx, double ax, double vy, double ay) -> double;
+"""
+
+code_newton_sqrt = """
+newton_step(x, S) := 0.5 * (x + S / x);
+
+> if iterations == 0 then guess else quick_sqrt(newton_step(guess, S), S, iterations - 1) as quick_sqrt(double guess, double S, int iterations) -> double;
+
+> if val < 0.0 then 0.0 elif val == 0.0 then 0.0 else quick_sqrt(val / 2.0, val, 8) as newton_sqrt(double val) -> double;
+"""
+
+code_cse_test = """
+displacement(t, v0, a) := v0 * t + 0.5 * a * t ^ 2;
+
+> (0.5 * 15.0 * (displacement(time, vx, ax) ^ 2)) + (15.0 * 9.81 * displacement(time, vx, ax)) 
+  as total_energy(double time, double vx, double ax) -> double;
+"""
+
+
+print(BasedCompiler.compile(code_cse_test))

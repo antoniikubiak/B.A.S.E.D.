@@ -7,7 +7,7 @@ from based.parser.TreeTransformer import TreeTransformer
 class BasedCompiler:
     @staticmethod
     def compile(code: str) -> str:
-        parser = Lark.open('grammar.lark', parser='lalr', propagate_positions=True)
+        parser = Lark.open('based/parser/grammar.lark', parser='lalr', propagate_positions=True)
         try:
             tree = parser.parse(code)
         except UnexpectedInput as e:
@@ -21,4 +21,4 @@ class BasedCompiler:
 
         ScopeVisitor().visit(tree)
         tree = TreeTransformer().transform(tree)
-        return "".join((str(x) for x in tree))
+        return "".join((str(x) for x in tree if x is not None))

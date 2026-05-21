@@ -117,26 +117,30 @@ class TreeTransformer(Transformer):
             vars_list.append(VariableTypePair(Variable.create(var_name), return_type))
         return ParamWithTypeList(vars_list)
 
-    def function_call(self, items):
-        name = str(items[0])
-        from lark import Tree
-        arg = items[1]
+    def arg_list(self, items: list) -> list[EvaluableExpression]:
+        return [x for x in items]
 
-        while isinstance(arg, Tree):
-            arg = arg.children[0]
+    def function_call(self, items) -> EvaluableExpression:
+        name = str(items[0])
+        if len(items) == 1:
+            args = []
+        else:
+            args = items[1]
+
+        if not isinstance(args, list):
+            args = [args]
 
         if name == "sin":
-            return Sin.create(arg)
+            return Sin.create(*args)
         elif name == "cos":
-            return Cos.create(arg)
+            return Cos.create(*args)
         elif name == "ln":
-            return Ln.create(arg)
+            return Ln.create(*args)
         elif name == "tan":
-            return Tan.create(arg)
+            return Tan.create(*args)
         else:
-            #funkcja użytkownika
             from based.Structure.Expressions.UserFunctionCall import UserFunctionCall
-            return UserFunctionCall.create(name, arg)
+            return UserFunctionCall.create(name, *args)
 
     def if_struct(self, items: list) -> IfStructure:
         default = items[-1]
@@ -199,4 +203,4 @@ class TreeTransformer(Transformer):
             FunctionRegistry().register(UserFunction.create(items[0], items[2], *items[1].variables))
 
     def param_list(self, items: list) -> ParamWithoutTypeList:
-        return ParamWithoutTypeList(items)
+        return ParamWithoutTypeList([Variable.create(str(x)) for x in items])

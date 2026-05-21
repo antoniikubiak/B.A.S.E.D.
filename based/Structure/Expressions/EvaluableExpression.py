@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import abstractmethod, abstractproperty
 
 from based.Structure.SimplifiableExpression import SimplifiableExpression
 
@@ -53,5 +53,5 @@ class EvaluableExpression(SimplifiableExpression):
         pass
 
     @abstractmethod
-    def evaluate(self, var: 'Variable', val: 'EvaluableConstant') -> EvaluableExpression:
+    def evaluate(self, var: 'Variable', val: 'EvaluableExpression') -> EvaluableExpression:
         pass

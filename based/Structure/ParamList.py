@@ -19,6 +19,12 @@ class ParamWithTypeList(Node):
         res = ", ".join([str(var) for var in self.variables])
         return res
 
+    def __len__(self) -> int:
+        return len(self.variables)
+
+    def __getitem__(self, idx: int) -> VariableTypePair:
+        return self.variables[idx]
+
 class ParamWithoutTypeList(Node):
     def __init__(self, variables: list[Variable]):
         self.variables = variables
@@ -30,3 +36,6 @@ class ParamWithoutTypeList(Node):
     def __str__(self) -> str:
         res = ", ".join([str(var) for var in self.variables])
         return res
+
+    def __getitem__(self, idx: int) -> Variable:
+        return self.variables[idx]

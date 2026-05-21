@@ -50,19 +50,15 @@ class Exponentiation(NonCommutativeOperation):
     def _operate_on_constants(left: EvaluableConstant, right: EvaluableConstant) -> EvaluableExpression:
         return left ** right
 
-
     @override
     def __invert__(self) -> EvaluableExpression:
-        """
-        Computes the multiplicative inverse by negating the exponent.
-        :return: A new Exponentiation object representing $base^{-exponent}$.
-        """
         return Exponentiation.create(self.left, -self.right)
 
     @override
     def __str__(self) -> str:
-        if isinstance(self.right, IntegerConstant):
-            return " * ".join([str(self.left)] * self.right.value)
+        if isinstance(self.right, IntegerConstant) and int(self.right.value) > 0:
+            return f"({' * '.join([str(self.left)] * int(self.right.value))})"
+
         return f"pow({self.left}, {self.right})"
 
     def __init__(self, base, exponent, **kwargs):

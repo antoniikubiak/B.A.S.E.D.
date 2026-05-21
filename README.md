@@ -173,11 +173,11 @@ REL_OP: "==" | "!=" | ">" | "<" | ">=" | "<="
     - [x] Basic operations on constants
     - [x] Arithmetic operations on variables
     - [x] Simplification of arithmetic operations with variables
-- [ ] Extended mathematical engine
+- [x] Extended mathematical engine
     - [x] Differentiation engine
     - [x] Basic mathematical functions implementation (e.g. sin, cos, ln, ...)
     - [x] Custom function definition (within `definition` tag)
-        - [ ] Ensure recursive functions work with if-else structure (probably after code generation done?)
+        - [x] Ensure recursive functions work with if-else structure (probably after code generation done?)
     - [x] Shorthand for sum and product evaluation
 - [x] Basic logic engine
     - [x] Constant logic conditions evaluation
@@ -188,7 +188,7 @@ REL_OP: "==" | "!=" | ">" | "<" | ">=" | "<="
     - [x] Variable and function name scope control
     - [x] Syntax errors handling
     - [x] Semantic errors handling
-- [ ] C Code generation
+- [x] C Code generation
     - [x] Basic code generation
-    - [ ] Common subexpression elimination
+    - [x] Common subexpression elimination
 - [ ] Simple command line interface

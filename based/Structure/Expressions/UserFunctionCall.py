@@ -7,14 +7,21 @@ from based.Structure.FunctionRegistry import FunctionRegistry
 class UserFunctionCall(EvaluableExpression):
     def evaluate(self, var: 'Variable', val: 'EvaluableConstant') -> EvaluableExpression:
         self.args = tuple(a.evaluate(var, val) for a in self.args)
+        return self
 
-    def __init__(self, name: str, arg: EvaluableExpression, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, name: str, *args: EvaluableExpression, **kwargs):
+        super().__init__(name, *args, **kwargs)
         self.name = name
-        self.args = (arg,)
-
+        self.args = args
 
     def simplify(self) -> EvaluableExpression:
+        registry = FunctionRegistry()
+        func_def = registry.get(self.name)
+        if isinstance(func_def, UserFunction):
+            inlined_expr = func_def.body
+            for i, arg in enumerate(self.args):
+                inlined_expr = inlined_expr.evaluate(func_def.params[i], arg)
+            return inlined_expr
         return self
 
     def diff(self, var: 'Variable') -> EvaluableExpression:
@@ -24,17 +31,7 @@ class UserFunctionCall(EvaluableExpression):
         if not func_def:
             raise ValueError(f"Funkcja {self.name} nie jest zdefiniowana!")
 
-        body = func_def.body
-
-        internal_var = func_def.params.variables[0].var
-
-        inner_diff = self.args[0].diff(var)
-
-        body_diff = body.diff(internal_var)
-
-        substituted_body_diff = body_diff.evaluate(internal_var, self.args[0])
-
-        return substituted_body_diff * inner_diff
+        return func_def.diff(var)
 
     def __neg__(self) -> EvaluableExpression:
         from based.Structure.Expressions.EvaluableConstant import IntegerConstant
@@ -45,8 +42,15 @@ class UserFunctionCall(EvaluableExpression):
         func_def = registry.get(self.name)
 
         if isinstance(func_def, UserFunction):
-            return str(func_def)
-        return f"{self.name}({", ".join(str(a) for a in self.args)})"
+            import copy
+            inlined_expr = copy.deepcopy(func_def.body)
+
+            for param_var, actual_arg in zip(func_def.params.variables, self.args):
+                inlined_expr = inlined_expr.evaluate(param_var, actual_arg)
+            return str(inlined_expr)
+
+        arguments_str = ", ".join(str(a) for a in self.args)
+        return f"{self.name}({arguments_str})"
 
     def __eq__(self, other):
         if not isinstance(other, UserFunctionCall):
@@ -54,7 +58,7 @@ class UserFunctionCall(EvaluableExpression):
         return self.name == other.name and self.args == other.args
 
     def __hash__(self):
-        return hash((self.name, self.args[0]))
+        return hash((self.name, self.args))
 
     def sort_key(self):
         return SortPriority.OTHER, self.name, tuple(arg.sort_key() for arg in self.args)

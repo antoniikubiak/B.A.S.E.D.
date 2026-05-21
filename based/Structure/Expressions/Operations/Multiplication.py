@@ -69,8 +69,6 @@ class Multiplication(CommutativeOperation):
 
     @override
     def diff(self, var: 'Variable') -> EvaluableExpression:
-        #(fgh)' = f'gh + fg'h + fgh' and the same for more vars
-
         from based.Structure.Expressions.Operations.Addition import Addition
 
         derivatives = []
@@ -86,7 +84,33 @@ class Multiplication(CommutativeOperation):
 
     @override
     def __str__(self):
-        return " * ".join(str(x) for x in self.args)
+        from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
+
+        numerators = []
+        denominators = []
+
+        for arg in self.args:
+            if isinstance(arg, Exponentiation):
+                base = arg.left
+                exponent = arg.right
+                if isinstance(exponent, IntegerConstant) and int(exponent.value) == -1:
+                    denominators.append(base)
+                    continue
+            numerators.append(arg)
+
+        if not denominators:
+            inner_content = " * ".join(str(x) for x in numerators)
+            return f"({inner_content})"
+
+        num_str = " * ".join(str(x) for x in numerators) if numerators else "1"
+        den_str = " * ".join(str(x) for x in denominators)
+
+        if len(numerators) > 1:
+            num_str = f"({num_str})"
+        if len(denominators) > 1:
+            den_str = f"({den_str})"
+
+        return f"({num_str} / {den_str})"
 
     @override
     def __mul__(self, other: EvaluableExpression) -> EvaluableExpression:

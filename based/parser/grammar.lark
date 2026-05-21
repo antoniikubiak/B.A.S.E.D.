@@ -32,7 +32,7 @@ param_w_type_list: TYPE IDENTIFIER ("," TYPE IDENTIFIER)* -> generate_param_with
      | "(" expression ")"
 
 function_call: IDENTIFIER "(" arg_list? ")" -> function_call
-arg_list: expr ("," expr)*
+arg_list: expr ("," expr)* -> arg_list
 
 shorthand: SHORTHAND_TYPE "(" IDENTIFIER FROM INT TO INT ":" expression ")" -> shorthand
 derivative: "diff" "(" IDENTIFIER "," INT "," expression ")" -> differentiate

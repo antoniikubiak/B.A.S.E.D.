@@ -65,7 +65,8 @@ class Addition(CommutativeOperation):
 
     @override
     def __str__(self):
-        return " + ".join(str(x) for x in self.args)
+        inner_content = " + ".join(str(x) for x in self.args)
+        return f"({inner_content})"
 
     @override
     def __add__(self, other: EvaluableExpression) -> EvaluableExpression:
