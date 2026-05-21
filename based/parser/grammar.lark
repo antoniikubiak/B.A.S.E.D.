@@ -2,7 +2,7 @@ start: definition* target+
 
 definition: IDENTIFIER "(" param_list? ")" ":=" expression ";" -> definition
 
-param_list: IDENTIFIER ("," IDENTIFIER)*
+param_list: IDENTIFIER ("," IDENTIFIER)* -> param_list
 
 target: ">" expression "as" IDENTIFIER "(" param_w_type_list? ")" "->" TYPE ";" -> generate_target
 

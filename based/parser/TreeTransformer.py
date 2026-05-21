@@ -1,15 +1,17 @@
 from lark import Transformer
 
 from based.Structure.Expressions.Functions.Ln import Ln
+from based.Structure.Expressions.Functions.UserFunction import UserFunction
 from based.Structure.Expressions.IfStructure import IfStructure, CondExprPair
 from based.Structure.Expressions.EvaluableConstant import FloatConstant, IntegerConstant
 from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
 from based.Structure.FunctionDefinition import FunctionDefinition
+from based.Structure.FunctionRegistry import FunctionRegistry
 from based.Structure.LogicExpressions.Condition import Condition
 from based.Structure.LogicExpressions.LogicConstant import LogicConstant
 from based.Structure.LogicExpressions.LogicOperation import LogicOr, LogicAnd
-from based.Structure.ParamList import ParamWithTypeList, VariableTypePair
+from based.Structure.ParamList import ParamWithTypeList, VariableTypePair, ParamWithoutTypeList
 from based.Structure.ReturnType import ReturnType
 from based.Structure.Expressions.Variable import Variable
 from based.Structure.Expressions.Functions.Sin import Sin
@@ -189,3 +191,12 @@ class TreeTransformer(Transformer):
         for i in range(count):
             expr = expr.diff(var)
         return expr
+
+    def definition(self, items: list) -> None:
+        if len(items) == 2:
+            FunctionRegistry().register(UserFunction.create(items[0], items[1]))
+        else:
+            FunctionRegistry().register(UserFunction.create(items[0], items[2], *items[1].variables))
+
+    def param_list(self, items: list) -> ParamWithoutTypeList:
+        return ParamWithoutTypeList(items)

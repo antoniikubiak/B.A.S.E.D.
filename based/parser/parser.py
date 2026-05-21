@@ -38,6 +38,7 @@ code2 = """
 f1(x) := x;
 > f1(x) as f(int x) -> int;
 """
+code3 = """> diff(x, 1, ln(x)) as f(int x) -> double;"""
 
 
 print(BasedCompiler.compile(code2))

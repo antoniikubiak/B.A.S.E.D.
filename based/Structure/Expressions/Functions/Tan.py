@@ -3,26 +3,29 @@ import math
 
 from based.Structure.Expressions.EvaluableConstant import EvaluableConstant
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
-from based.Structure.Expressions.Functions.UnaryFunction import UnaryFunction
+from based.Structure.Expressions.Functions.CallableFunction import CallableFunction
 from based.Structure.Expressions.Variable import Variable
 
 
-class Tan(UnaryFunction):
+class Tan(CallableFunction):
     @override
     def __str__(self) -> str:
-        return f"tan({self.arg})"
+        return f"tan({self.args[0]})"
 
     @override
     def evaluate(self, var: Variable, val: EvaluableConstant) -> EvaluableExpression:
-        return Tan.create(self.arg.evaluate(var, val))
+        return Tan.create(self.args[0].evaluate(var, val))
 
     @override
-    def get_derivative_formula(self):
+    def get_derivative_formula(self, position: int):
         from based.Structure.Expressions.Functions.Cos import Cos
         from based.Structure.Expressions.Operations.Exponentiation import Exponentiation
         from based.Structure.Expressions.EvaluableConstant import IntegerConstant
 
-        cos_node = Cos.create(self.arg)
+        if position != 0:
+            raise ValueError(f"Cannot differentiate cos function at argument {position}, since it accepts only 1 argument.")
+
+        cos_node = Cos.create(self.args[0])
         minus_two = IntegerConstant.create(-2)
 
         return Exponentiation.create(cos_node, minus_two)
@@ -35,7 +38,7 @@ class Tan(UnaryFunction):
     @override
     def sort_key(self):
         from based.Structure.Expressions.SortPriority import SortPriority
-        return SortPriority.FUNCTION, "TAN", (self.arg.sort_key(),)
+        return SortPriority.FUNCTION, "TAN", (self.args[0].sort_key(),)
 
     def __repr__(self):
-        return f"tan({self.arg})"
+        return f"tan({self.args[0]})"

@@ -3,19 +3,21 @@ import math
 
 from based.Structure.Expressions.EvaluableConstant import EvaluableConstant
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
-from based.Structure.Expressions.Functions.UnaryFunction import UnaryFunction
+from based.Structure.Expressions.Functions.CallableFunction import CallableFunction
 from based.Structure.Expressions.Variable import Variable
 
 
-class Ln(UnaryFunction):
+class Ln(CallableFunction):
     @override
     def evaluate(self, var: Variable, val: EvaluableConstant) -> EvaluableExpression:
-        return Ln.create(self.arg.evaluate(var, val))
+        return Ln.create(self.args[0].evaluate(var, val))
 
     @override
-    def get_derivative_formula(self):
+    def get_derivative_formula(self, position: int) -> EvaluableExpression:
         from based.Structure.Expressions.EvaluableConstant import IntegerConstant
-        return IntegerConstant.create(1) / self.arg
+        if position != 0:
+            raise ValueError(f"Cannot differentiate cos function at argument {position}, since it accepts only 1 argument.")
+        return IntegerConstant.create(1) / self.args[0]
 
     @override
     def evaluate_numeric(self, value: float):
@@ -27,8 +29,8 @@ class Ln(UnaryFunction):
     @override
     def sort_key(self):
         from based.Structure.Expressions.SortPriority import SortPriority
-        return SortPriority.FUNCTION, "LN", (self.arg.sort_key(),)
+        return SortPriority.FUNCTION, "LN", (self.args[0].sort_key(),)
 
     @override
     def __str__(self):
-        return f"ln({self.arg})"
+        return f"ln({self.args[0]})"

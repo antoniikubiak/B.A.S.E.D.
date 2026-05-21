@@ -1,4 +1,5 @@
 from based.Structure.Expressions.EvaluableExpression import EvaluableExpression
+from based.Structure.Expressions.Functions.UserFunction import UserFunction
 from based.Structure.Expressions.SortPriority import SortPriority
 from based.Structure.FunctionRegistry import FunctionRegistry
 
@@ -40,7 +41,12 @@ class UserFunctionCall(EvaluableExpression):
         return IntegerConstant.create(-1) * self
 
     def __str__(self) -> str:
-        return f"{self.name}({self.args[0]})"
+        registry = FunctionRegistry()
+        func_def = registry.get(self.name)
+
+        if isinstance(func_def, UserFunction):
+            return str(func_def)
+        return f"{self.name}({", ".join(str(a) for a in self.args)})"
 
     def __eq__(self, other):
         if not isinstance(other, UserFunctionCall):

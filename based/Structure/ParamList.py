@@ -23,6 +23,9 @@ class ParamWithoutTypeList(Node):
     def __init__(self, variables: list[Variable]):
         self.variables = variables
 
+    def __len__(self) -> int:
+        return len(self.variables)
+
     @override
     def __str__(self) -> str:
         res = ", ".join([str(var) for var in self.variables])
